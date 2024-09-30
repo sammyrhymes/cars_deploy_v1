@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://js.stripe.com/v3/"></script> <!-- Stripe SDK -->
+</head>
+<body>
+  <form id="payment-form" method="post">
+    {% csrf_token %}
+    <div class="bg-gray-100 lg:flex">
+        <div class="p-4 lg:w-2/3 lg:px-32 lg:mx-auto">
+            <h2 class="uppercase font-bold text-xl">Billing Address</h2>
+            <div class="bg-white p-4 mt-4 ">
+                <!-- Billing address fields (no changes needed here) -->
+                <div class="flex gap-2">
+                    <div class="w-1/2 flex flex-col ">
+                        <label class="p-2" for="firstname">First Name</label>
+                        <input class="p-2 border border-gray-200 rounded" type="text" placeholder="Ronda">
+                    </div>
+                    <div  class="w-1/2 flex flex-col">
+                        <label class="p-2" for="lastname">Last Name</label>
+                        <input class="p-2 border border-gray-200 rounded" type="text" placeholder="Rendition">
+                    </div>                    
+                </div>
+                <div class="w-full flex flex-col ">
+                    <label class="p-2" for="Address Line">Address Line</label>
+                    <input class="p-2 border border-gray-200 rounded" type="text" placeholder="Ronda">
+                </div>
+                <div class="w-full flex flex-col ">
+                    <label class="p-2" for="city">City</label>
+                    <input class="p-2 border border-gray-200 rounded" type="text" placeholder="Ronda">
+                </div>
+                <div class="w-full flex flex-col ">
+                    <label class="p-2"  for="phone">Phone number</label>
+                    <input class="p-2 border border-gray-200 rounded" type="tel" id="phone" name="phone" required placeholder="254">
+                </div>
+                <div class="mt-10 ">
+                    <!-- Add Alternative Shipping Address Button -->
+                    <div class=" py-4 mb-4">
+                      <button id="add-address-button" class="w-full border border-gray-200 text-gray-800 py-2 rounded-lg hover:bg-gray-100 transition duration-500">
+                        Add Alternative Shipping Address
+                      </button>
+                  
+                      <!-- Hidden Alternative Shipping Address Form -->
+                      <div id="alternative-address-form" class="bg-white hidden">
+                        <div class="flex gap-2">
+                          <div class="w-1/2 flex flex-col">
+                            <label class="p-2" for="firstname">First Name</label>
+                            <input class="p-2 border border-gray-200 rounded" type="text" placeholder="Ronda">
+                          </div>
+                          <div class="w-1/2 flex flex-col">
+                            <label class="p-2" for="lastname">Last Name</label>
+                            <input class="p-2 border border-gray-200 rounded" type="text" placeholder="Rendition">
+                          </div>
+                        </div>
+                        <div class="w-full flex flex-col mt-2">
+                          <label class="p-2" for="address-line">Address Line</label>
+                          <input class="p-2 border border-gray-200 rounded" type="text" placeholder="1234 Main St">
+                        </div>
+                        <div class="w-full flex flex-col mt-2">
+                          <label class="p-2" for="city">City</label>
+                          <input class="p-2 border border-gray-200 rounded" type="text" placeholder="City">
+                        </div>
+                        <div class="w-full flex flex-col mt-2">
+                          <label class="p-2" for="postcode">Postcode</label>
+                          <input class="p-2 border border-gray-200 rounded" type="text" placeholder="Postcode">
+                        </div>
+                        <div class="w-full flex flex-col mt-2">
+                          <label class="p-2" for="country">Country</label>
+                          <input class="p-2 border border-gray-200 rounded" type="text" placeholder="Country">
+                        </div>
+                      </div>
+                    </div>
+                  </div>   
+                
+                <h2 class="uppercase font-bold text-xl my-4">Payment Information</h2>
+                <div class="bg-white"> 
+                    <div class="mt-2">
+                        <!-- DPO intergration -->
+                        <div class="border border-gray-300 rounded-lg p-4 mb-4">
+                            <label class="flex items-center">
+                                <input type="radio" value="dpo" name="payment" class="mr-3" id="DPO-radio">
+                                <div class="flex items-center">
+                                    <img src="https://dpogroup.com/wp-content/uploads/2020/07/dpo-group-834x675.png" alt="MasterCard" class="h-8">
+                                    <span class="ml-3 text-lg">Pay with DPO</span>
+                                </div>
+                            </label>
+                            <div id="DPO-form" class="mt-4 hidden">
+                                <p class="text-gray-700">You will be redirected to DPO to complete your payment.</p>
+                            </div>
+                        </div>
+                    <div class="mt-2">
+                        <!-- Visa/MasterCard Accordion -->
+                        <div class="border border-gray-300 rounded-lg p-4 mb-4">
+                            <label class="flex items-center">
+                                <input type="radio" value="visa" name="payment" class="mr-3" id="visa-master-radio">
+                                <div class="flex items-center">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png" alt="Visa" class="h-6 mr-2">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="MasterCard" class="h-6">
+                                    <span class="ml-3 text-lg">Pay with Visa/MasterCard</span>
+                                </div>
+                            </label>
+                            <div id="visa-master-form" class="mt-4 hidden">
+                                <p class="text-gray-700">You will be redirected to Stripe to complete your payment.</p>
+                            </div>
+                        </div>
+                      
+                        <!-- Mpesa Accordion -->
+                        <div class="border border-gray-300 rounded-lg p-4">
+                            <label class="flex items-center">
+                                <input type="radio" value="mpesa" name="payment" class="mr-3" id="mpesa-radio">
+                                <div class="flex items-center">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/M-PESA_LOGO-01.svg/512px-M-PESA_LOGO-01.svg.png?20191120100524" alt="Mpesa" class="h-6">
+                                    <span class="ml-3 text-lg">Pay with Mpesa</span>
+                                </div>
+                            </label>
+                            <div id="mpesa-info" class="mt-4 hidden">
+                                <p class="text-gray-700">You will receive an STK push on your phone once you press "Place Order".</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-4 lg:hidden text-gray-700 sticky inset-y-0">
+                    <div class="p-4 "> 
+                        <div class=" flex justify-between text-sm border-b border-gray-500">
+                            <h2>Subtotal</h2>
+                            <h2 class="pb-4">{{ amount}}</h2>
+                        </div>
+                    </div>
+                    <div class="px-4 flex justify-between text-xl font-bold "> 
+                        <h2>Subtotal</h2>
+                        <h2>{{amount}}</h2>
+                    </div>
+                    <div class="px-4 ">
+                      <button class=" w-full block bg-gray-900 py-3 text-gray-100 text-center font-bold uppercase mt-4" type="submit" id="stripe-pay-btn" >
+                        place order
+                      </button>
+                    </div>
+       
+                </div>
+                <!-- Place Order button -->
+                <div class="hidden lg:block rounded ">
+                    <button type="submit" id="pay-button" class=" w-full block bg-gray-900 py-3 text-gray-100 text-center font-bold uppercase mt-4">
+                        Place Order
+                    </button>
+                </div>
+            </div>
+        </div>
+                <div class="bg-white hidden lg:block lg:flex-grow">
+            <div class="p-8">
+                <h2 class="text-xl font-bold uppercase">Your Order</h2>
+                <p class="my-4">{{ basket_len }}</p>
+                <div class="flex space-x-8">
+                    <img class="h-10" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/M-PESA_LOGO-01.svg/512px-M-PESA_LOGO-01.svg.png?20191120100524" alt="">
+                    <div class="text-gray-700">
+                        <h2 class="font-bold">Win Your car</h2>
+                        <p class="text-xs ">{{amount}}</p>
+                    </div>
+                </div>
+                <div class="p-4 "> 
+                    <div class=" flex justify-between text-sm border-b border-gray-500">
+                        <h2>Subtotal</h2>
+                        <h2 class="pb-4">{{amount}}</h2>
+                    </div>
+                </div>
+                <div class="px-4 flex justify-between text-xl font-bold "> 
+                    <h2>Subtotal</h2>
+                    <h2>{{amount}}</h2>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="bg-white hidden lg:block lg:flex-grow">
+            <div class="p-8">
+                <h2 class="text-xl font-bold uppercase">Your Order</h2>
+                <p class="my-4">{{ basket_len }}</p>
+                <div class="flex space-x-8">
+                    <img class="h-10" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/M-PESA_LOGO-01.svg/512px-M-PESA_LOGO-01.svg.png?20191120100524" alt="">
+                    <div class="text-gray-700">
+                        <h2 class="font-bold">Win Your car</h2>
+                        <p class="text-xs ">{{amount}}</p>
+                    </div>
+                </div>
+                <div class="p-4 "> 
+                    <div class=" flex justify-between text-sm border-b border-gray-500">
+                        <h2>Subtotal</h2>
+                        <h2 class="pb-4">{{amount}}</h2>
+                    </div>
+                </div>
+                <div class="px-4 flex justify-between text-xl font-bold "> 
+                    <h2>Subtotal</h2>
+                    <h2>{{amount}}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+  </form>
+
+  <!-- JavaScript for handling payment methods and button logic -->
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const visaMasterRadio = document.getElementById('visa-master-radio');
+    const mpesaRadio = document.getElementById('mpesa-radio');
+    const DPOradio = document.getElementById('DPO-radio');
+    
+    const visaMasterForm = document.getElementById('visa-master-form');
+    const mpesaInfo = document.getElementById('mpesa-info');
+    const DPOForm = document.getElementById('DPO-form');
+    
+    const payButton = document.getElementById('pay-button');
+
+    // Toggle between payment options (Mpesa/Stripe/DPO)
+    visaMasterRadio.addEventListener('click', () => {
+        visaMasterForm.classList.remove('hidden');
+        mpesaInfo.classList.add('hidden');
+        DPOForm.classList.add('hidden');
+        setFormAction('visa')
+    });
+
+    mpesaRadio.addEventListener('click', () => {
+        mpesaInfo.classList.remove('hidden');
+        visaMasterForm.classList.add('hidden');
+        DPOForm.classList.add('hidden');
+        setFormAction('mpesa')
+    });
+
+    DPOradio.addEventListener('click', () => {
+        mpesaInfo.classList.add('hidden');
+        visaMasterForm.classList.add('hidden');
+        DPOForm.classList.remove('hidden');
+        setFormAction('dpo')
+    });
+
+
+    // Show/Hide Alternative Address Form
+    const addAddressButton = document.getElementById('add-address-button');
+    const alternativeAddressForm = document.getElementById('alternative-address-form');
+
+    addAddressButton.addEventListener('click', (e) => {
+        e.preventDefault(); // Prevent default button behavior
+        alternativeAddressForm.classList.toggle('hidden');
+    });
+});
+            // Define the respective URLs for each payment method
+            const urlMapping = {
+            'dpo': '{% url "DPO" %}',
+            'visa': '{% url "stripe" %}',
+            'mpesa': '{% url "stk" %}'
+        };
+
+        // Function to update the form action based on the selected payment method
+        function setFormAction(paymentMethod) {
+            const form = document.getElementById('payment-form');
+            form.action = urlMapping[paymentMethod];
+        }
+  </script>
+</body>
+</html>

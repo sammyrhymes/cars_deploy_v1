@@ -1,0 +1,173 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+{% block content %}
+<!-- =======================
+Pop up
+======================= -->
+
+<div id="pop-up" class="bg-black/50 transform transition-all opacity-100 scale-100 p-4 sm:p-8 md:p-20 min-h-screen z-10 fixed hidden inset-0 flex justify-center items-center">
+    <div class="bg-white w-11/12 sm:w-4/5 md:w-2/3 lg:w-2/5 p-4 sm:p-6 md:p-10 rounded-lg shadow-xl">
+      <form method="POST" action="{% url 'add_to_basket' competition.id %}">
+        {% csrf_token %} 
+        <div class="flex justify-between sm:justify-end space-x-4 sm:space-x-14 font-bold text-gray-600 tracking-wide">
+          <h2 class="text-base text-center sm:text-lg md:text-xl ">Buy tickets</h2>
+          <a href="#" id="x" class="text-sm sm:text-base md:text-lg">X</a>
+        </div>
+  
+        <div class="flex flex-col md:flex-row items-center mt-4">
+          <img class="w-1/2 md:w-1/3 lg:w-2/5 mb-4 md:mb-0" src="{{ competition.image.url }}" alt="{{ competition.car_model }}">
+          <div class="ml-0 md:ml-6">
+            <h2 class="text-sm sm:text-base md:text-lg font-bold">{{ competition.car_brand }}</h2>
+            <p class="my-1 text-xs sm:text-sm md:text-base text-gray-400 font-bold">{{ competition.car_model }}</p>
+            <p class="text-sm sm:text-base md:text-lg ">1 ticket = Ksh <span id="ticket-price">{{ competition.ticket_price }}</span></p>
+            <p class="text-sm sm:text-base md:text-lg font-bold"> Ksh <span id="total-price">{{ competition.ticket_price }}</span></p> <!-- Total price element -->
+          </div>
+        </div>
+  
+        <div class="mt-4">
+          <h2 class="text-sm sm:text-base md:text-lg text-gray-600 font-bold">Quantity</h2>
+          <div class="flex justify-evenly items-center py-2">
+            <!-- Subtract Button -->
+            <button type="button" class="bg-gray-200 text-xs sm:text-sm md:text-base px-2 py-1 rounded" id="decrement">--</button>
+  
+            <input class="w-12 sm:w-14 text-xs sm:text-sm md:text-base text-center" value="2" type="number" name="ticket_count" id="quantity" min="1">
+            <!-- Add Button -->
+            <button type="button" class="bg-gray-200 text-xs sm:text-sm md:text-base px-2 py-1 rounded" id="increment">+</button>
+            <p class="text-xs sm:text-sm md:text-base">Max 75 tickets per person</p>
+          </div>
+        </div>
+  
+        <div class="space-x-1 mt-2">
+            <h2 class="my-2 text-sm sm:text-base md:text-lg text-gray-600 font-bold">Quick Select</h2>
+            <div class="flex flex-wrap justify-start gap-2">
+              <a class="inline-block p-2 bg-gray-200 text-xs sm:text-sm md:text-base quick-select" href="#" data-value="10">10 tickets</a>
+              <a class="inline-block p-2 bg-gray-200 text-xs sm:text-sm md:text-base quick-select" href="#" data-value="20">20 tickets</a>
+              <a class="inline-block p-2 bg-gray-200 text-xs sm:text-sm md:text-base quick-select" href="#" data-value="30">30 tickets</a>
+              <a class="inline-block p-2 bg-gray-200 text-xs sm:text-sm md:text-base quick-select" href="#" data-value="40">40 tickets</a>
+              <a class="inline-block p-2 bg-gray-200 text-xs sm:text-sm md:text-base quick-select" href="#" data-value="50">50 tickets</a>
+            </div>
+          </div>
+  
+        <button type="submit" class="block w-full py-3 px-8 mt-4 rounded-lg bg-orange-500 text-white text-xs sm:text-sm md:text-base font-bold animate-bounce ">
+          Add to basket >>
+        </button>
+      </form>
+    </div>
+  </div>  
+
+<!-- 
+===================
+competition
+===================
+-->
+<div class="bg-gray-200 min-h-screen">
+<div class="p-6 m-auto lg:flex ">
+<div class="border lg:w-2/3 ">
+<img class="w-full" src="{{ competition.image.url }}" alt="{{ competition.car_model}}">
+
+    <div class="grid lg:grid-cols-6 grid-cols-4 gap-2 my-4">
+        {% for image in images %}
+        <img class="w-96 aspect-video border " src="{{ image.image.url }}" alt="{{competition.car_model}}">
+        <!-- <img class="w-96" src="https://cdn.botb.com/media/z10lrvrw/911-turbos-8.jpg" alt=""> -->
+        <!-- <img class="w-96" src="https://cdn.botb.com/media/z10lrvrw/911-turbos-8.jpg" alt=""> -->
+        <!-- <img class="w-96" src="https://cdn.botb.com/media/z10lrvrw/911-turbos-8.jpg" alt="">
+        <img class="w-96" src="https://cdn.botb.com/media/z10lrvrw/911-turbos-8.jpg" alt="">
+        <img class="w-96" src="https://cdn.botb.com/media/z10lrvrw/911-turbos-8.jpg" alt=""> -->
+        {% endfor %}
+        <img class="w-96" src="https://cdn.botb.com/media/z10lrvrw/911-turbos-8.jpg" alt="">
+        <img class="w-96" src="https://cdn.botb.com/media/z10lrvrw/911-turbos-8.jpg" alt="">
+    </div>
+
+<div>
+    <div class="flex justify-between">
+    <h2 class="font-bold text-lg text-gray-800" >More games for you<<<>>>Increase your chances of winning</h2>
+    <div class="flex space-x-4 ">
+        <p class="px-1 font-bold bg-gray-300"></p>
+        <p class="px-1 font-bold bg-gray-300"></p>
+    </div>
+</div>
+<div>
+    <div class="container m-auto grid grid-cols-1 lg:grid-cols-3 gap-2 py-8">
+        {% for competition in competitions %}
+            <div class="py-2 px-4 bg-white transform transition duration-500 hover:bg-orange-400 hover:text-black-100 hover:scale-90 hover:shadow-lg">
+                <h2 class="text-gray-700 font-bold">{{ competition.car_brand }}</h2>
+                <p class="text-gray-600">{{ competition.car_model }}</p>
+                <div class="border-b border-gray-400 container m-auto my-2"></div>
+                <div class="">
+                    <img class="w-full aspect-video" src="{{ competition.image.url }}" alt="{{ competition.car_model }}">
+                    <div class="my-2 flex justify-between items-center">
+                        <p class="text-md text-gray-600 font-bold">Ksh{{ competition.ticket_price }}</p>
+                        <svg  class="p-2 bg-orange-500 fill-orange-500 rounded stroke-white border border-red-400 size-11 " xmlns="http://www.w3.org/2000/svg" 
+                        fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                        </svg>                          
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        <div class="py-2 px-4 bg-white">
+            <h2 class="text-gray-500 font-bold">BMW</h2>
+            <p class="text-gray-400">M4 CS</p>
+            <div class="border-b border-gray-400 container m-auto my-2"></div>
+            <div class="">
+                <img src="https://images.pexels.com/photos/707046/pexels-photo-707046.jpeg" alt="">
+                <div class="my-2 flex justify-between items-center">
+                    <p class="text-md text-gray-600 font-bold">$13.55</p>
+                    <svg  class="p-2 bg-orange-500 fill-orange-500 rounded stroke-white border border-red-400 size-11 " xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"
+                   
+                    >
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                      </svg>                          
+                </div>
+            </div>
+        </div>
+        <div class="py-2 px-4 bg-white">
+            <h2 class="text-gray-500 font-bold">BMW</h2>
+            <p class="text-gray-400">M4 CS</p>
+            <div class="border-b border-gray-400 container m-auto my-2"></div>
+            <div class="">
+                <img src="https://images.pexels.com/photos/707046/pexels-photo-707046.jpeg" alt="">
+                <div class="my-2 flex justify-between items-center">
+                    <p class="text-md text-gray-600 font-bold">$13.55</p>
+                    <svg  class="p-2 bg-orange-500 fill-orange-500 rounded stroke-white border border-red-400 size-11 " xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"
+                   
+                    >
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                      </svg>                          
+                </div>
+            </div>
+        </div>
+        </div>
+        
+    </div>
+</div>
+
+</div>
+
+<div class=" bg-white flex-grow h-96 p-4 sticky inset-x-0 top-20 transition delay-500 ml-4">
+  <h1 class="mb-2 text-sm text-gray-500 font-bold">Win A {{competition.car_model}}</h1>
+  <p class="text-lg mb-2 text-gray-700">
+  At only <span class=" font-bold text-orange-500">ksh {{competition.ticket_price}}</span> cash</p>
+  <p class="font-bold text-lg text-gray-800">More Tickets Higher chances of winning >>></p>
+
+  <!-- Flex container for image and specifications -->
+  <div class="flex flex-col md:flex-row items-start md:space-x-4 mt-4">
+      <!-- Car image -->
+      <img class="w-1/2 md:w-1/3 lg:w-2/5 mb-4 md:mb-0 max-w-sm" src="{{ competition.image.url }}" alt="{{ competition.car_model }}">
+
+      <!-- Specifications list -->
+      <ul class="pl-4 sm:pl-6 md:pl-0 space-y-2 text-sm sm:text-base md:text-lg lg:text-sm text-gray-700 flex-grow">
+        <h2 class="font-bold text-lg text-gray-800">Specifications</h2>
+        {% for spec in specs_list %}
+          <li class="font-bold">{{ spec }}</li>
+          <!-- <li>{{ competition.specifications }}</li>
+          <li>{{ competition.specifications }}</li> -->
+        {% endfor %}
+      </ul>
+  </div>
+  <a href="#" id="show-pop-up" class="block w-full px-8 py-3 bg-orange-500 rounded shadow text-white text-center mt-4 animate-bounce ">ENTER NOW >></a>
+</div>
+</div>
+</div>
+
+{% endblock %}

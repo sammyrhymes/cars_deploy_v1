@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login-Registration</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <div class="background"></div>
+     <header class="header">
+       <nav class="navbar">
+        <a href="{% url 'index'%}">Home</a>
+        <a href="#">About</a>
+        <a href="#">Services</a>
+        <a href="#">Contact</a>
+       </nav>
+
+    </header>
+
+    <div class="container">
+        <div class="content">
+
+            <h2 class="logo"><i class="bx bxl-firefox"></i>CarsCompetition</h2>
+
+            <div class="text-sci">
+                <h2>Welcome!<br><span>To MydreamcarAfrica Website.</span></h2>
+                <p>winning! Winning! win a car or a vacation holiday or cash prizes in Mydreamcar.Africa</p>
+
+                <div class="social-icons">
+                    <p>Sign in with...</p>
+                    <a href="#"><i class="bx bxl-facebook"></i></a>
+                    <a href="#"><i class="bx bxl-linkedin"></i></a>
+                    <a href="#"><i class="bx bxl-instagram"></i></a>
+                    <a href="#"><i class="bx bxl-twitter"></i></a>
+                </div>
+            </div>
+
+        </div>
+        <div class="logreg-box">
+            <!-- Login Form -->
+            <div class="form-box login {% if not register_form.errors %}active{% endif %}">
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <h2>Sign in</h2>
+
+                    <!-- Display error messages if login fails -->
+                    {% if messages %}
+                        {% for message in messages %}
+                        <div class="error-message {{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <div class="input-box">
+                        <input type="text" name="username" required>
+                        <span class="icon"><i class="bx bxs-envelope"></i></span>                        
+                        <label>Username</label>
+                    </div>
+
+                    <div class="input-box">
+                        <span class="icon"><i class="bx bxs-lock-alt"></i></span>
+                        <input type="password" name="password" required>
+                        <label>Password</label>
+                    </div>
+
+                    <div class="remember-forgot">
+                        <label><input type="checkbox"> Remember me</label>
+                        <a href="#">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="btn" name="login_submit">Sign In</button>
+
+                    <div class="login-register">
+                        <p>Don't have an account? <a href="#" class="register-link">Sign Up</a></p>                        
+                    </div>
+                </form>
+            </div>
+
+            <!-- Registration Form -->
+            <div class="form-box register {% if register_form.errors %}active{% endif %}">
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <h2>Sign Up</h2>
+
+                    <!-- Display error messages if registration fails -->
+                    {% if register_form.errors %}
+                    <div class="error-message">Please fix the errors below:</div>
+                    {% for field in register_form %}
+                        {% if field.errors %}
+                            <div class="field-error">{{ field.label }}: {{ field.errors|striptags }}</div>
+                        {% endif %}
+                    {% endfor %}
+                    {% endif %}
+
+                    <div class="input-box">
+                        <span class="icon"><i class="bx bxs-user"></i></span>
+                        <input type="text" name="username" required value="{{ register_form.username.value }}">
+                        <label>Username</label>
+                    </div>
+
+                    <div class="input-box">
+                        <span class="icon"><i class="bx bxs-envelope"></i></span>
+                        <input type="email" name="email" required value="{{ register_form.email.value }}">
+                        <label>Email</label>
+                    </div>
+
+                    <div class="input-box">
+                        <span class="icon"><i class="bx bxs-lock-alt"></i></span>
+                        <input type="password" name="password1" required>
+                        <label>Password</label>
+                    </div>
+
+                    <div class="input-box">
+                        <span class="icon"><i class="bx bxs-lock-alt"></i></span>
+                        <input type="password" name="password2" required>
+                        <label>Confirm Password</label>
+                    </div>
+
+                    <div class="remember-forgot">
+                        <label><input type="checkbox" required> I agree to the terms & conditions</label>
+                    </div>
+
+                    <button type="submit" class="btn" name="register_submit">Sign Up</button>
+
+                    <div class="login-register">
+                        <p>Already have an account? <a href="#" class="login-link">Sign In</a></p>                        
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'assets/js/scripts.js' %}"></script>
+</body>
+</html>

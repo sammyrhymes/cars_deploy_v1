@@ -1,0 +1,60 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="container">
+        <div class="row my-4">
+            <div class="col-md-4">
+            </div>
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        Profile Page
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <span class="h4"> Profile Information</span> 
+                                <a class="btn btn-info btn-sm float-right" href="{% url 'user-profile-update' %}">Edit</a>
+                                <hr>
+                                <table class="table bg-white table-borderless">
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row">Username</th>
+                                            <td>{{ user.username }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Email</th>
+                                            <td>{{ user.email }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Phone</th>
+                                            <td>{{ user.userprofile.phone }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Address</th>
+                                            <td>{{ user.userprofile.address }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Date of Birth</th>
+                                            <td>{{ user.userprofile.date_of_birth }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Favorite Car</th>
+                                            <td>{{ user.userprofile.favorite_car }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-md-4">
+                                <img class="img-thumbnail" src="{{ user.userprofile.image.url }}" alt="Profile Image">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
