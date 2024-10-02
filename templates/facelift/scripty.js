@@ -79,8 +79,6 @@
         let currentIndex = 0;
 
 
-
-
         // Function to update carousel position
         const updateCarousel = () => {
             carousel.style.transform = `translateX(-${currentIndex * 100}%)`;

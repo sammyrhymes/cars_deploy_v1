@@ -36,55 +36,6 @@ from django.shortcuts import render
 from .models import BasketItem
 # Create your views here.
 
-
-# def user_auth(request):
-#     if request.method == 'POST':
-#         if 'login_submit' in request.POST:
-#             # Handle login
-#             login_form = LoginForm(request, request.POST)
-#             register_form = CreateUserForm()
-
-#             if login_form.is_valid():
-#                 username = login_form.cleaned_data.get('username')
-#                 password = login_form.cleaned_data.get('password')
-#                 user = authenticate(request, username=username, password=password)
-                
-#                 if user is not None:
-#                     login(request, user)
-#                     return redirect('/')  # Redirect to home after login
-#                 else:
-#                     messages.error(request, 'Invalid username or password.')
-#             else:
-#                 messages.error(request, 'Login form is invalid.')
-
-#         elif 'register_submit' in request.POST:
-#             # Handle registration
-#             register_form = CreateUserForm(request.POST)
-#             login_form = LoginForm()
-
-#             if register_form.is_valid():
-#                 register_form.save()  # Create the user but don't log them in
-#                 messages.success(request, 'Registration successful! Please log in.')
-#                 return redirect('user_auth')  # Redirect to the login page with a message
-#             else:
-#                 messages.error(request, 'Registration failed. Please correct the errors.')
-
-#     else:
-#         login_form = LoginForm()
-#         register_form = CreateUserForm()
-
-#     return render(request, 'frontend/log.html', {
-#         'login_form': login_form,
-#         'register_form': register_form,
-#     })
-
-# def logout_user(request):
-
-#     auth.logout(request)
-
-#     return redirect("login.html")
-
-
 def index(request):
     competitions = Competition.objects.all().order_by('-start_date')[:4]
     context = {
@@ -95,9 +46,6 @@ def index(request):
 
 def test(request):
     return render(request, 'frontend/test.html', context={})
-
-# def profile_view(request):
-    # return render(request,'frontend/profile.html')
 
 def wallet(request):
     pass

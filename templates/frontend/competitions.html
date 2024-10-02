@@ -5,89 +5,155 @@
     competition
     ===================
  -->
- <div class="bg-gray-100 p-4">
-    <div class="container m-auto grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6">
-        {% if competitions %}
-        {% for competition in competitions %}
-        <div class="py-2 px-4 mb-4 bg-white transform transition duration-500 hover:bg-orange-400 hover:text-black hover:scale-105 hover:shadow-lg">
-            <a href="{% url 'competition' competition.id %}">
-                <h2 class="text-gray-700 font-bold text-lg md:text-xl">{{ competition.car_brand }}</h2>
-                <p class="text-gray-600 text-md">{{ competition.car_model }}</p>
-                <div class="border-b border-gray-400 my-2"></div>
-                <div class="">
-                    <img class="w-full aspect-video" src="{{ competition.image.url }}" alt="{{ competition.car_model }}">
-                    <div class="my-2 flex justify-between items-center">
-                        <p class="text-md text-gray-600 font-bold">Ksh{{ competition.ticket_price }}</p>
-            </a>
-                        <div>
-                            <svg class="p-2 bg-orange-500 fill-orange-500 rounded stroke-white border border-red-400 size-11" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                            </svg>   
-                        </div>                       
-                    </div>
-                </div>                   
-        </div>
-        {% endfor %}
-        {% endif %}
-        <!-- Example Static Content -->
-        <div class="py-2 px-4 bg-white">
-            <h2 class="text-gray-500 font-bold text-lg md:text-xl">BMW</h2>
-            <p class="text-gray-400">M4 CS</p>
-            <div class="border-b border-gray-400 my-2"></div>
-            <div class="">
-                <img class="w-full aspect-video" src="https://images.pexels.com/photos/707046/pexels-photo-707046.jpeg" alt="">
-                <div class="my-2 flex justify-between items-center">
-                    <p class="text-md text-gray-600 font-bold">$13.55</p>
-                    <svg class="p-2 bg-orange-500 fill-orange-500 rounded stroke-white border border-red-400 size-11" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                    </svg>                          
-                </div>
-            </div>
-        </div>
-        <div class="py-2 px-4 bg-white">
-            <h2 class="text-gray-500 font-bold text-lg md:text-xl">BMW</h2>
-            <p class="text-gray-400">M4 CS</p>
-            <div class="border-b border-gray-400 my-2"></div>
-            <div class="">
-                <img class="w-full aspect-video" src="https://images.pexels.com/photos/707046/pexels-photo-707046.jpeg" alt="">
-                <div class="my-2 flex justify-between items-center">
-                    <p class="text-md text-gray-600 font-bold">$13.55</p>
-                    <svg class="p-2 bg-orange-500 fill-orange-500 rounded stroke-white border border-red-400 size-11" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                    </svg>                          
-                </div>
-            </div>
-        </div>
 
-        <div class="py-2 px-4 bg-white">
-            <h2 class="text-gray-500 font-bold text-lg md:text-xl">BMW</h2>
-            <p class="text-gray-400">M4 CS</p>
-            <div class="border-b border-gray-400 my-2"></div>
-            <div class="">
-                <img class="w-full aspect-video" src="https://images.pexels.com/photos/707046/pexels-photo-707046.jpeg" alt="">
-                <div class="my-2 flex justify-between items-center">
-                    <p class="text-md text-gray-600 font-bold">$13.55</p>
-                    <svg class="p-2 bg-orange-500 fill-orange-500 rounded stroke-white border border-red-400 size-11" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                    </svg>                          
-                </div>
-            </div>
-        </div>
+ <div class="pt-14 px-2 md:px-10 lg:px-20 transition-all duration-500">
 
-        <div class="py-2 px-4 bg-white">
-            <h2 class="text-gray-500 font-bold text-lg md:text-xl">BMW</h2>
-            <p class="text-gray-400">M4 CS</p>
-            <div class="border-b border-gray-400 my-2"></div>
-            <div class="">
-                <img class="w-full aspect-video" src="https://images.pexels.com/photos/707046/pexels-photo-707046.jpeg" alt="">
-                <div class="my-2 flex justify-between items-center">
-                    <p class="text-md text-gray-600 font-bold">$13.55</p>
-                    <svg class="p-2 bg-orange-500 fill-orange-500 rounded stroke-white border border-red-400 size-11" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                    </svg>                          
-                </div>
-            </div>
-        </div>
+    <div class="">
+        <h1 class="font-bold mb-2">Drawing Soon</h1>
+        <p class="text-sm text-gray-800 ">Choose a competition, grab your tickets, and tune in for the LIVE draw for a chance to WIN your dream car for a fraction of the cost. You could be next</p>
     </div>
-</div>
+
+    <div class=" transition-all duration-500 ease-in-out mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2  md:gap-2 lg:grid-cols-3 lg:gap-4 transition-all duration-500" id="carousel">
+        <!-- car card -->
+
+            {% if competitions %}
+            {% for competition in competitions %}
+                  <div class=" rounded-lg border overflow-hidden  mt-4 bg-white w-full sm:w-96 md:w-auto flex-shrink-0 transition-transform transform hover:scale-105 hover:shadow-md duration-200 ease-in-out" id="card">
+                    <!-- Wrap the competition details in the anchor tag -->
+                    <a href="{% url 'competition' competition.id %}" class="block no-underline hover:no-underline">
+                        <img class="w-full" src="{{ competition.image.url }}" alt="{{ competition.car_model }}" class="rounded-t-lg">
+                        <div class="p-4">
+                            <div class="flex justify-between mb-2">
+                                <div class="h-2 w-4/5 rounded-full bg-gray-200">
+                                    <div class="w-1/2 h-2 rounded-full bg-gradient-to-r from-orange-500 to-orange-300"></div>
+                                </div>
+                                <p class="text-gray-800 text-xs">50% sold</p>
+                            </div>
+                            <p class="py-2 text-gray-700 font-bold">Win this {{ competition.car_brand }} Tax free</p>
+                            <div class="flex items-center text-xs p-2 bg-orange-200 w-max rounded-md">
+                                <svg class="size-3 text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>
+                                <p class="text-orange-600 ml-1">1 day</p>                  
+                            </div>
+                        </div>
+                    </a>
+                    <!-- Adjust the flexbox and reduce unnecessary padding or margin -->
+                    <div class="flex justify-between items-center px-4 pb-4 -mt-2 text-orange-500">
+                        <p class="text-xl">Ksh {{ competition.ticket_price }}</p>
+                        <!-- Plus sign (separate from the link) -->
+                        <svg class="size-10 fill-orange-500 text-white cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                    </div>
+                </div>
+            {% endfor %}
+            {% endif %}
+
+            {% if competitions %}
+            {% for competition in competitions %}
+                  <div class=" rounded-lg border overflow-hidden  mt-4 bg-white w-full sm:w-96 md:w-auto flex-shrink-0 transition-transform transform hover:scale-105 hover:shadow-md duration-200 ease-in-out" id="card">
+                    <!-- Wrap the competition details in the anchor tag -->
+                    <a href="{% url 'competition' competition.id %}" class="block no-underline hover:no-underline">
+                        <img class="w-full" src="{{ competition.image.url }}" alt="{{ competition.car_model }}" class="rounded-t-lg">
+                        <div class="p-4">
+                            <div class="flex justify-between mb-2">
+                                <div class="h-2 w-4/5 rounded-full bg-gray-200">
+                                    <div class="w-1/2 h-2 rounded-full bg-gradient-to-r from-orange-500 to-orange-300"></div>
+                                </div>
+                                <p class="text-gray-800 text-xs">50% sold</p>
+                            </div>
+                            <p class="py-2 text-gray-700 font-bold">Win this {{ competition.car_brand }} Tax free</p>
+                            <div class="flex items-center text-xs p-2 bg-orange-200 w-max rounded-md">
+                                <svg class="size-3 text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>
+                                <p class="text-orange-600 ml-1">1 day</p>                  
+                            </div>
+                        </div>
+                    </a>
+                    <!-- Adjust the flexbox and reduce unnecessary padding or margin -->
+                    <div class="flex justify-between items-center px-4 pb-4 -mt-2 text-orange-500">
+                        <p class="text-xl">Ksh {{ competition.ticket_price }}</p>
+                        <!-- Plus sign (separate from the link) -->
+                        <svg class="size-10 fill-orange-500 text-white cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                    </div>
+                </div>
+            {% endfor %}
+            {% endif %}
+
+            {% if competitions %}
+            {% for competition in competitions %}
+                  <div class=" rounded-lg border overflow-hidden  mt-4 bg-white w-full sm:w-96 md:w-auto flex-shrink-0 transition-transform transform hover:scale-105 hover:shadow-md duration-200 ease-in-out" id="card">
+                    <!-- Wrap the competition details in the anchor tag -->
+                    <a href="{% url 'competition' competition.id %}" class="block no-underline hover:no-underline">
+                        <img class="w-full" src="{{ competition.image.url }}" alt="{{ competition.car_model }}" class="rounded-t-lg">
+                        <div class="p-4">
+                            <div class="flex justify-between mb-2">
+                                <div class="h-2 w-4/5 rounded-full bg-gray-200">
+                                    <div class="w-1/2 h-2 rounded-full bg-gradient-to-r from-orange-500 to-orange-300"></div>
+                                </div>
+                                <p class="text-gray-800 text-xs">50% sold</p>
+                            </div>
+                            <p class="py-2 text-gray-700 font-bold">Win this {{ competition.car_brand }} Tax free</p>
+                            <div class="flex items-center text-xs p-2 bg-orange-200 w-max rounded-md">
+                                <svg class="size-3 text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>
+                                <p class="text-orange-600 ml-1">1 day</p>                  
+                            </div>
+                        </div>
+                    </a>
+                    <!-- Adjust the flexbox and reduce unnecessary padding or margin -->
+                    <div class="flex justify-between items-center px-4 pb-4 -mt-2 text-orange-500">
+                        <p class="text-xl">Ksh {{ competition.ticket_price }}</p>
+                        <!-- Plus sign (separate from the link) -->
+                        <svg class="size-10 fill-orange-500 text-white cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                    </div>
+                </div>
+            {% endfor %}
+            {% endif %}
+
+            {% if competitions %}
+            {% for competition in competitions %}
+                  <div class=" rounded-lg border overflow-hidden  mt-4 bg-white w-full sm:w-96 md:w-auto flex-shrink-0 transition-transform transform hover:scale-105 hover:shadow-md duration-200 ease-in-out" id="card">
+                    <!-- Wrap the competition details in the anchor tag -->
+                    <a href="{% url 'competition' competition.id %}" class="block no-underline hover:no-underline">
+                        <img class="w-full" src="{{ competition.image.url }}" alt="{{ competition.car_model }}" class="rounded-t-lg">
+                        <div class="p-4">
+                            <div class="flex justify-between mb-2">
+                                <div class="h-2 w-4/5 rounded-full bg-gray-200">
+                                    <div class="w-1/2 h-2 rounded-full bg-gradient-to-r from-orange-500 to-orange-300"></div>
+                                </div>
+                                <p class="text-gray-800 text-xs">50% sold</p>
+                            </div>
+                            <p class="py-2 text-gray-700 font-bold">Win this {{ competition.car_brand }} Tax free</p>
+                            <div class="flex items-center text-xs p-2 bg-orange-200 w-max rounded-md">
+                                <svg class="size-3 text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>
+                                <p class="text-orange-600 ml-1">1 day</p>                  
+                            </div>
+                        </div>
+                    </a>
+                    <!-- Adjust the flexbox and reduce unnecessary padding or margin -->
+                    <div class="flex justify-between items-center px-4 pb-4 -mt-2 text-orange-500">
+                        <p class="text-xl">Ksh {{ competition.ticket_price }}</p>
+                        <!-- Plus sign (separate from the link) -->
+                        <svg class="size-10 fill-orange-500 text-white cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                    </div>
+                </div>
+            {% endfor %}
+            {% endif %}
+
+
+        </div>
+
+</div><br>
 {% endblock %}
