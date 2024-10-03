@@ -118,7 +118,7 @@
             
             <a href="{% url 'account_logout' %}" class="inline-block hover:text-orange-500 transition-colors duration-300 ease-in-out hover:underline">Logout</a>
             <a href="{% url 'user-profile' %}" class=" text-orange-500 inline-block hover:text-orange-500 transition-colors duration-300 ease-in-out hover:underline animate-bounce">Profile</a>
-            <a href="#" class="inline-block hover:text-orange-500 transition-colors duration-300 ease-in-out hover:underline">Wallet</a>
+            <a href="{% url 'deposit' %}" class="inline-block hover:text-orange-500 transition-colors duration-300 ease-in-out hover:underline">Wallet</a>
             <!-- <a href="{% url 'account_signup' %}" class=" text-orange-500 inline-block hover:text-orange-500 transition-colors duration-300 ease-in-out hover:underline animate-bounce">Signup</a> -->
             
             {% else %}
@@ -145,7 +145,7 @@
             {% if request.user.is_authenticated %}
             <a href="{% url 'account_logout' %}" class="block hover:text-orange-500 transition-colors duration-300 ease-in-out">Logout</a>
             <a href="{% url 'user-profile' %}" class=" text-orange-500 block hover:text-orange-500 transition-colors duration-300 ease-in-out animate-bounce">Profile</a>          
-            <a href="{% url 'view_wallet' %}" class="block hover:text-orange-500 transition-colors duration-300 ease-in-out">Wallet</a>
+            <a href="{% url 'deposit' %}" class="block hover:text-orange-500 transition-colors duration-300 ease-in-out">Wallet</a>
             {% else %}
             <a href="{% url 'account_login' %}" class="block hover:text-orange-500 transition-colors duration-300 ease-in-out">Login</a>
             <a href="{% url 'account_signup' %}" class=" text-orange-500 block hover:text-orange-500 transition-colors duration-300 ease-in-out animate-bounce">Signup</a> 

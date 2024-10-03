@@ -167,9 +167,9 @@ competition
   const scrollRightButton = document.getElementById('scrollRight');
   
   let currentIndex = 0;
-  const imagesToShow = 4;  // Number of images to show at once
-  const totalImages = {{ images|length }};
-  
+    const imagesToShow = 4;  // Number of images to show at once
+    const totalImages = {{ images|length }};
+    
   scrollRightButton.addEventListener('click', () => {
       if (currentIndex < totalImages - imagesToShow) {
           currentIndex += imagesToShow; // Scroll to the next 4 images
