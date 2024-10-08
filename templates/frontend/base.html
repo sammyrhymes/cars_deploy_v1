@@ -29,6 +29,21 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        @keyframes fade-up {
+            100% {
+                bottom: 24px;
+                opacity: 1;
+            }
+        }
+    </style>
+
 </head>
 <body>
 
@@ -118,7 +133,7 @@
             
             <a href="{% url 'account_logout' %}" class="inline-block hover:text-orange-500 transition-colors duration-300 ease-in-out hover:underline">Logout</a>
             <a href="{% url 'user-profile' %}" class=" text-orange-500 inline-block hover:text-orange-500 transition-colors duration-300 ease-in-out hover:underline animate-bounce">Profile</a>
-            <a href="{% url 'deposit' %}" class="inline-block hover:text-orange-500 transition-colors duration-300 ease-in-out hover:underline">Wallet</a>
+    
             <!-- <a href="{% url 'account_signup' %}" class=" text-orange-500 inline-block hover:text-orange-500 transition-colors duration-300 ease-in-out hover:underline animate-bounce">Signup</a> -->
             
             {% else %}
@@ -145,7 +160,6 @@
             {% if request.user.is_authenticated %}
             <a href="{% url 'account_logout' %}" class="block hover:text-orange-500 transition-colors duration-300 ease-in-out">Logout</a>
             <a href="{% url 'user-profile' %}" class=" text-orange-500 block hover:text-orange-500 transition-colors duration-300 ease-in-out animate-bounce">Profile</a>          
-            <a href="{% url 'deposit' %}" class="block hover:text-orange-500 transition-colors duration-300 ease-in-out">Wallet</a>
             {% else %}
             <a href="{% url 'account_login' %}" class="block hover:text-orange-500 transition-colors duration-300 ease-in-out">Login</a>
             <a href="{% url 'account_signup' %}" class=" text-orange-500 block hover:text-orange-500 transition-colors duration-300 ease-in-out animate-bounce">Signup</a> 
@@ -158,6 +172,35 @@
     {% block content %}
 
     {% endblock %}
+
+        <div
+        class="group fixed right-7 bottom-[-50px] opacity-0 p-6 animate-fade-up animation-delay-1000">
+        <a href="https://wa.me/254707320922" class="text-6xl text-[#25d366] transition-transform duration-400 group-hover:scale-110">
+            <i class="fa-brands fa-whatsapp transform transition-transform duration-400 group-hover:rotate-12"></i>
+        </a>
+        <span
+            class="absolute top-0 left-1 font-bold text-[#075e54] transform rotate-20 translate-x-2 transition-all duration-400 opacity-0 group-hover:rotate-0 group-hover:translate-x-0 group-hover:opacity-100">
+            Contact Us
+        </span>
+        </div>
+
+        <!-- Add the keyframes animation using Tailwind's arbitrary value feature -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+            .animate-fade-up {
+                animation: fade-up 1000ms forwards;
+            }
+
+            .animation-delay-1000 {
+                animation-delay: 1000ms;
+            }
+
+            /* Arbitrary rotate value for span */
+            .rotate-20 {
+                transform: rotateZ(20deg);
+            }
+        </style>
+
 
     <!-- =======================
     footer
@@ -217,6 +260,6 @@
         </div>
     </div>
     <script src="{% static 'assets/js/script.js' %}"></script>
-    <!-- <script src="{% static 'assets/js/scripty.js' %}"></script> -->
+
 </body>
 </html>

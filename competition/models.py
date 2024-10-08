@@ -47,6 +47,28 @@ class Competition(models.Model):
     def __str__(self):
         return self.car_model
     
+
+class HolidayCompetition(models.Model):
+    name = models.CharField(max_length=100, default='diani')
+    description = models.TextField()
+    specifications = models.TextField()
+    image = models.ImageField(upload_to='cars/')
+    ticket_price = models.DecimalField(max_digits=10, decimal_places=2)
+    total_tickets = models.PositiveIntegerField()
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+    max_entries_per_user = models.PositiveIntegerField()
+    tickets_sold = models.IntegerField(default=0)
+
+    def total_entries_sold(self):
+        return self.entries.count()
+
+    def remaining_entries(self):
+        return self.total_tickets - self.total_entries_sold()
+
+    def __str__(self):
+        return self.holiday_model
+    
 class CompetitionImage(models.Model):
     competition = models.ForeignKey(Competition, related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='cars/')

@@ -54,6 +54,10 @@ def competitions(request):
     competitions = Competition.objects.all()
     return render(request, 'frontend/competitions.html', {'competitions': competitions})
 
+def holidaycompetitions(request):
+    competitions = HolidayCompetition.objects.all()
+    return render(request, 'frontend/Holidaycompetitions.html', {'competitions': competitions})
+
 def competition_details(request, competition_id):
     ticket_options = range(2, 21, 2) 
     competitions = Competition.objects.all()

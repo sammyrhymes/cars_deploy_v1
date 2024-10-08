@@ -12,7 +12,10 @@ from django.http import HttpResponse
 import requests
 import time
 from competition.credentials import LipanaMpesaPpassword, MpesaAccessToken, MpesaC2bCredential
-
+from django.contrib import messages
+import logging
+from decimal import Decimal
+from django.utils import timezone
 
 @login_required
 def profile(request):
@@ -31,6 +34,8 @@ def profile(request):
         'user': user,
         'competitions': competitions
     })
+
+
 @login_required
 def profile_update(request):
 
@@ -56,36 +61,53 @@ def profile_update(request):
     }
     return render(request, 'user/profile_update.html', context)
 
+
+logger = logging.getLogger(__name__)
+
+@login_required
 def deposit(request):
-    # Ensure the user is authenticated
-    if request.user.is_authenticated:
-        # Get the wallet of the currently logged-in user
-        wallet = get_object_or_404(Wallet, user=request.user)
+    wallet = get_object_or_404(Wallet, user=request.user)
 
-        # Fetch the transactions for the user
-        transactions = Transaction.objects.filter(user=request.user)  # ordering by latest transaction first
+    if request.method == 'POST':
+        amount = request.POST.get('amount')
 
-        print(f"Wallet: {wallet.amount}")
-        print(f"Transactions: {transactions}")
+        try:
+            # Ensure that amount is a valid decimal
+            if amount:
+                amount = Decimal(amount)
+                
+                if amount > 0:
+                    # Update wallet balance and create a transaction
+                    wallet.update_balance(amount, 'Deposit')
 
-        # Context to pass to the template
-        context = {
-            'wallet': wallet,
-            'transactions': transactions,
-        }
+                    # Feedback to user
+                    messages.success(request, f"{amount} KES deposited successfully!")
 
-        # Render the deposit page with the user's wallet and transaction details
-        return render(request, 'user/deposit.html', context)
-    else:
-        # If the user is not authenticated, redirect to the login page
-        return redirect('login')
+                    # Redirect after successful deposit
+                    return redirect('deposit')
+                else:
+                    messages.error(request, "The deposit amount must be greater than 0.")
+            else:
+                messages.error(request, "Please provide a valid amount.")
+
+        except Exception as e:
+            messages.error(request, f"Error processing deposit: {str(e)}")
+            logger.error(f"Error during deposit: {str(e)}")
+
+    # Fetch the transactions for the user
+    transactions = Transaction.objects.filter(user=request.user).order_by('-date')
+
+    context = {
+        'wallet': wallet,
+        'transactions': transactions,
+    }
+    return render(request, 'user/deposit.html', context)
     
-    
+
 def deposit_stk(request):
     if not request.user.is_authenticated:
         return HttpResponse("Unauthorized", status=401)
 
-    
     if request.method == "POST":
         phone = request.POST.get('phone')
         amount = request.POST.get('amount')
@@ -124,7 +146,6 @@ def deposit_stk(request):
             # Fetch the list of transactions from the callback endpoint
             callback_response = requests.get("https://django-daraja.vercel.app/payments/")
             callback_data = json.loads(callback_response.text)
-            callback_data_list = []
             callback_data_list = callback_data["payments"]["rows"]
 
             # Loop through the callback_data_list to check if the provided checkout_request_id exists
@@ -134,33 +155,46 @@ def deposit_stk(request):
                 if transaction.get("checkoutrequestid") == checkout_request_id:
                     found = True
                     print(f"Checkout Request ID {checkout_request_id} found in the list.")
-                    # You can also perform additional actions here, like printing transaction details
-                    print("Transaction details:", transaction)
-                    
+
+                    # If transaction was successful
                     if transaction.get("resultcode") == 0:     
-                                                   
+                        # Update wallet balance
                         wallet = Wallet.objects.get(user=request.user)  # Retrieve the user's wallet
                         wallet.amount += int(amount)  # Add the provided amount to the current wallet amount
                         wallet.save()  # Save the updated wallet instance
+
+                        # **Create the transaction record in the database**
+                        Transaction.objects.create(
+                            user=request.user,
+                            transaction_type="Deposit",
+                            amount=Decimal(amount),  # Make sure it's stored as a Decimal
+                            date=timezone.now()  # Add a timestamp
+                        )
+
+                        messages.success(request, f"{amount} KES deposited successfully!")
                         return redirect('deposit')
                     else:
-                        wallet = Wallet.objects.get(user=request.user)
-                        print(wallet.amount,wallet)
-                        wallet.amount += int(amount)
-                        wallet.save()                    
-                        # print(transaction.get("resultdesc"))
-                        # return redirect(payment_failure) 
+                         # Update wallet balance
+                        wallet = Wallet.objects.get(user=request.user)  # Retrieve the user's wallet
+                        wallet.amount += int(amount)  # Add the provided amount to the current wallet amount
+                        wallet.save()  # Save the updated wallet instance
+
+                        # **Create the transaction record in the database**
+                        Transaction.objects.create(
+                            user=request.user,
+                            transaction_type="Deposit",
+                            amount=Decimal(amount),  # Make sure it's stored as a Decimal
+                            date=timezone.now()  # Add a timestamp
+                        )
+                        messages.error(request, "Transaction failed or was canceled.")
                         return redirect('deposit') 
                             
-                    
             if not found:
                 print(f"Checkout Request ID {checkout_request_id} not found in the list.")
+                messages.error(request, "Transaction not found in M-Pesa records.")
 
         else:
+            messages.error(request, "Failed to initiate transaction with M-Pesa.")
             return redirect('check_out')
 
     return HttpResponse("Invalid request method.", status=405)
-
-def deposit(request):
-
-    return render(request,'user/deposit.html',{})
