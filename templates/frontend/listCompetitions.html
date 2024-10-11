@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>competitions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+
+    <div class="min-h-screen  lg:flex gap-4 container mx-auto p-4">
+
+      <!-- Nav for small screens -->
+      <div class="bg-white p-8 mb-4 shadow-lg lg:hidden">
+        <div class="flex justify-between items-center">
+            <h1 class="font-bold">Admin Panel</h1>
+            <svg id="hambugerIcon" class="size-6 sm:hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg> 
+            <div class="hidden sm:block">
+                <ul class="text-center text-gray-500 flex">
+                    <li class="pt-6 underline"><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+                    <li class="pt-6"><a href="{% url 'listUsers' %}">Users</a></li>
+                    <li class="pt-6"><a href="{% url 'listCompetitions' %}">Competitions</a></li>
+                    <li class="pt-6"><a href="{% url 'createCompetition' %}">Create Competition</a></li>
+                </ul>
+            </div>       
+        </div>
+
+        <div id="menu" class="hidden">
+            <ul class="text-center text-gray-500">
+                <li class="pt-6 underline"><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+                <li class="pt-6"><a href="{% url 'listUsers' %}">Users</a></li>
+                <li class="pt-6"><a href="{% url 'listCompetitions' %}">Competitions</a></li>
+                <li class="pt-6"><a href="{% url 'createCompetition' %}">Create Competition</a></li>
+            </ul>
+        </div>
+    </div>
+
+      
+      <!-- menu on large screens -->
+
+      <div class="hidden lg:block left h-[97vh] absolute sticky top-4  w-1/5 bg-white p-8 rounded-lg lg:flex flex-col justify-between">
+        <div>
+        <h2 class="text-lg font-bold">
+          Admin Panel
+        </h2>
+        
+          <ul class="mt-8 text-gray-500">
+            <li class="pt-6 underline"><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+            <li class="pt-6"><a href="{% url 'listUsers' %}">Users</a></li>
+            <li class="pt-6"><a href="{% url 'listCompetitions' %}">Competitions</a></li>
+            <li class="pt-6"><a href="{% url 'createCompetition' %}">Create Competition</a></li>
+          </ul>
+        </div>
+        <div class="flex flex-col items-center text-gray-500">
+            <img class="size-12 rounded-full object-cover" src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=600" alt="">
+            <p class="text-sm">salma</p>
+            <p class="text-xs">salma@gmail.com</p>
+        </div>
+      </div>
+
+      <div class="right lg:w-4/5">
+
+    
+
+        <!-- ===============================
+        competition list section
+        =============================== -->
+        <div class="hidden lg:block bg-white lg:flex justify-between text-gray-800 mb-4 p-8 rounded-xl shadow-lg">
+          <h1 class="text-2xl font-bold">List of Competitions</h1>
+          <button class="bg-black px-3 py-2 text-white rounded-xl hover:bg-gray-900 hover:text-gray-100"><a href="{% url 'createCompetition' %}">Create Competitions</a></button>
+        </div>
+
+        <div class="bg-white text-gray-800 p-8 rounded-xl shadow-lg">
+          <!-- heading -->
+          <div class="flex justify-between items-center">
+            
+            <div>
+              <h1 class="text-2xl font-bold">Competitions</h1>
+              <p class="text-xs"><a class="text-blue-500" href="#">{{competition_count}}</a> in total</p>
+            </div>
+            
+            <div class="flex gap-4">
+              
+              <div>
+                <h1 class="text-2xl font-bold">94</h1>
+                <p class="text-xs">done</p>
+              </div>
+
+              <div class="border-l">
+
+              </div>
+
+              <div>
+                <h1 class="text-2xl font-bold">27</h1>
+                <p class="text-xs">active</p>
+              </div>
+            
+            </div>
+
+            {% if messages %}
+              <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+              {% for message in messages %}
+                  <p>{{ message }}</p>
+              {% endfor %}
+              </div>
+            {% endif %}
+          
+          </div>
+
+          <table class="w-full table-fixed mt-4 border-spacing-2 border-gray-200 border-collapse">
+            <thead>
+                <tr class="border-y text-left text-gray-500">
+                    <td class="py-2">Title</td>
+                    <td>Players</td>
+                    <td>Status</td>
+                    <td class="hidden sm:table-cell">Image</td>
+                    <td class="hidden md:table-cell">Start</td>
+                    <td class="hidden md:table-cell">End</td>
+                    <td class="hidden lg:table-cell">Total Staked</td>
+                    <td class=" md:table-cell text-center">Actions</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for competition in competition_list %}
+                <tr class="text-sm">
+                    <td class="py-2 font-bold">{{ competition.car_brand }}</td>
+                    <td class="p-4">{{ competition.player_count }}</td>
+                    <td>
+                        <div class="bg-green-100 w-max rounded-md p-1 border border-green-500 flex text-xs gap-1 items-center text-green-500">
+                            <svg class="size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                            <p>Done</p>
+                        </div>
+                    </td>
+                    <td class="hidden sm:table-cell">
+                        <img class="size-8 rounded-full" src="{{ competition.image.url }}" alt="{{ competition.car_model }}">
+                    </td>
+                    <td class="hidden md:table-cell ">{{ competition.start_date }}</td>
+                    <td class="hidden md:table-cell ">{{ competition.end_date }}</td>
+                    <td class="hidden lg:table-cell text-center">{{ competition.ticket_price }}</td>
+                    <td class="flex flex-col sm:flex-row space-x-0 sm:space-x-2 m-2 sm:m-4 p-2"> <!-- Allow buttons to stack vertically on small screens -->
+                      <button class="bg-blue-500 px-2 py-1 rounded text-white mb-2 sm:mb-0"> <!-- Add bottom margin for spacing when stacked -->
+                          <a href="{% url 'editCompetition' competition.pk %}">Edit</a>
+                      </button>
+                      <button class="bg-red-500 px-2 py-1 rounded text-white">
+                          <a href="{% url 'deleteCompetition' competition.pk %}">Delete</a>
+                      </button>
+                  </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        </div>
+      </div>
+    </div>
+
+    <script>
+//menu
+const menu = document.querySelector('#menu')
+const hambugerIcon = document.querySelector('#hambugerIcon')
+
+const toggleMenu = function(){
+  console.log('clicked')
+  if (menu.classList.contains('hidden')){
+     menu.classList.replace('hidden', 'block')
+     return
+  } else {
+    menu.classList.replace('block', 'hidden')
+    return
+  }
+}
+
+hambugerIcon.addEventListener('click', toggleMenu)
+
+// carosel
+      let slideIndex = 0;
+const carousel = document.getElementById("carousel");
+
+function showSlide(index) {
+  carousel.style.transform = `translateX(-${index * 100}%)`;
+}
+
+function nextSlide() {
+  slideIndex++;
+  if (slideIndex >= carousel.children.length) {
+    slideIndex = 0;
+  }
+  showSlide(slideIndex);
+}
+
+function previousSlide() {
+  slideIndex--;
+  if (slideIndex < 0) {
+    slideIndex = carousel.children.length - 1;
+  }
+  showSlide(slideIndex);
+}
+
+// Add event listeners for buttons
+const prevButton = document.querySelector(".prev");
+const nextButton = document.querySelector(".next");
+
+setInterval(nextSlide, 1000)
+
+prevButton.addEventListener("click", previousSlide);
+nextButton.addEventListener("click", nextSlide);
+    </script>
+</body>
+</html>

@@ -20,25 +20,51 @@
             <div class="md:w-3/4 p-6">
                 <h4 class="text-2xl font-bold mb-4">Shopping Cart</h4>
                 <p class="text-gray-600">Items: {{ basket_items|length }}</p>
+
                 {% if basket_items %}
-                    {% for item in basket_items %}
-                        <div class="flex border-b py-4">
-                            <div class="w-1/4">
-                                <img class="w-12" src="{{ item.competition.image.url }}" alt="{{ item.competition.car_model }}">
-                            </div>
-                            <div class="flex-1 px-4">
-                                <div class="text-gray-800">{{ item.competition.name }}</div>
-                                <div class="text-gray-600">{{ item.competition.car_model }}</div>
-                            </div>
-                            <div class="w-1/4 text-center">
-                                <span class="border p-2">{{ item.ticket_count }}</span>
-                            </div>
-                            <div class="w-1/4 text-right">
-                                Ksh {{ item.competition.ticket_price|multiply:item.ticket_count|floatformat:2 }}
-                                <a href="{% url 'remove_from_basket' item.id %}" class="text-black-500 ml-2">&#10005;</a>
-                            </div>
+                {% for item in basket_items %}
+                <div class="flex border-b py-4">
+                    <div class="w-1/4">
+                        {% if item.competition %}
+                            <img class="w-12" src="{{ item.competition.image.url }}" alt="{{ item.competition.name }}">
+                        {% elif item.holicompetition %}
+                            <img class="w-12" src="{{ item.holicompetition.image.url }}" alt="{{ item.holicompetition.name }}">
+                        {% endif %}
+                    </div>
+                    <div class="flex-1 px-4">
+                        <div class="text-gray-800">
+                            {% if item.competition %}
+                                {{ item.competition.name }}
+                            {% elif item.holicompetition %}
+                                {{ item.holicompetition.name }}
+                            {% endif %}
                         </div>
-                    {% endfor %}
+                        <div class="text-gray-600">
+                            {% if item.competition %}
+                                {{ item.competition.car_model }}
+                            {% elif item.holicompetition %}
+                                {{ item.holicompetition.car_model }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="w-1/4 text-center">
+                        <span class="border p-2" id="ticket-count-{{ item.id }}">{{ item.ticket_count }}</span>
+                        <button class="plus-btn" data-competition-id="{{ item.id }}">+</button>
+                    </div>
+                    <div class="w-1/4 text-right">
+                        {% if item.competition %}
+                            KES <span class="cost" data-competition-id="{{ item.id }}">
+                                {{ item.competition.ticket_price|multiply:item.ticket_count|floatformat:2 }}
+                            </span>
+                        {% elif item.holicompetition %}
+                            KES <span class="cost" data-competition-id="{{ item.id }}">
+                                {{ item.holicompetition.ticket_price|multiply:item.ticket_count|floatformat:2 }}
+                            </span>
+                        {% endif %}
+                        <a href="{% url 'remove_from_basket' item.id %}" class="text-black-500 ml-2">&#10005;</a>
+                    </div>
+                </div>
+            {% endfor %}
                 {% else %}
                     <p class="text-center">No items yet, keep on Playing.</p>
                 {% endif %}
@@ -54,7 +80,7 @@
                 </div>
                 <div class="flex justify-between border-t pt-2">
                     <span class="font-bold">TOTAL PRICE:</span>
-                    <span class="text-orange-500 font-bold">KES {{ total_cost|floatformat:2 }}</span>
+                    <span class="text-orange-500 font-bold">KES <span id="total-cost">{{ total_cost|floatformat:2 }}</span></span>
                 </div>
                 <div class="mt-6">
                     <a href="{% url 'check_out' %}" class="block text-center text-orange bg-red-500 hover:bg-red-600 font-bold py-2 rounded animate-bounce">CHECKOUT</a>
@@ -62,5 +88,73 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const plusButtons = document.querySelectorAll('.plus-btn');
+            let totalCostElement = document.getElementById('total-cost');
+
+            plusButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const competitionId = this.getAttribute('data-competition-id');
+                    const currentCountElement = document.getElementById(`ticket-count-${competitionId}`);
+                    const costElement = document.querySelector(`.cost[data-competition-id="${competitionId}"]`);
+                    let ticketCount = parseInt(currentCountElement.innerText);
+                    const price = parseFloat(costElement.innerText) / ticketCount;
+
+                    ticketCount += 1;
+                    const newTotal = parseFloat(price * ticketCount).toFixed(2);
+                    costElement.innerText = `${newTotal}`;
+                    currentCountElement.innerText = ticketCount;
+
+                    updateTotalCost();
+
+                    fetch('/update-basket/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        body: JSON.stringify({
+                            'competition_id': competitionId,
+                            'ticket_count': ticketCount
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            console.log("Basket updated successfully.");
+                        } else {
+                            console.error("Error updating basket.");
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+                });
+            });
+
+            function updateTotalCost() {
+                let totalCost = 0;
+                document.querySelectorAll('.cost').forEach(costElement => {
+                    totalCost += parseFloat(costElement.innerText);
+                });
+                totalCostElement.innerText = totalCost.toFixed(2);
+            }
+
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+        });
+    </script>
 </body>
 </html>

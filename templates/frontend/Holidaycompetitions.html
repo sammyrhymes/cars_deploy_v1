@@ -11,7 +11,7 @@
         {% if competitions %}
             {% for competition in competitions %}
                 <div class="rounded-lg border overflow-hidden mt-4 bg-white w-full sm:w-96 md:w-auto flex-shrink-0 transition-transform transform hover:scale-105 hover:shadow-md duration-200 ease-in-out" id="card">
-                    <a href="{% url 'competition' competition.id %}" class="block no-underline hover:no-underline">
+                    <a href="{% url 'holicompetition' competition.id %}" class="block no-underline hover:no-underline">
                         <img class="w-full rounded-t-lg" src="{{ competition.image.url }}" alt="{{ competition.name }}">
                         <div class="p-4">
                             <div class="flex justify-between mb-2">
@@ -41,5 +41,5 @@
             <p>No competitions available at the moment. Check back soon!</p>
         {% endif %}
     </div>
-</div>
+</div><br>
 {% endblock %}

@@ -7,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 # Allowed Hosts and CSRF Trusted Origins
-ALLOWED_HOSTS= ['https://mydreamcar.africa']
+ALLOWED_HOSTS= ['mydreamcar.africa']
 CSRF_TRUSTED_ORIGINS=[
     'https://mydreamcar.africa'
     ]
@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     'user.apps.UserConfig',
     'crispy_forms',
     'crispy_bootstrap4',
+
+    'paypal.standard.ipn',
 
 ]
 
@@ -120,3 +122,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # LOGIN_URL = '/user_auth/'  
 LOGIN_REDIRECT_URL = '/'
+
+PAYPAL_RECEIVER_EMAIL = 'bizrowino899@gmail.com'
+PAYPAL_TEST = True
+

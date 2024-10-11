@@ -10,5 +10,6 @@ urlpatterns = [
     path('user/', include('user.urls')),
     path('mpesa/', include('mpesa_payments.urls')),
     path('accounts/', include('allauth.urls')),
+    path('paypal', include('paypal.standard.ipn.urls')),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

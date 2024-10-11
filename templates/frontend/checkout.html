@@ -104,7 +104,7 @@
                                 </div>
                             </label>
                             <div id="visa-master-form" class="mt-4 hidden">
-                                <p class="text-gray-700">You will be redirected to Stripe to complete your payment.</p>
+                                <p class="text-gray-700">You will be redirected to paypal to complete your payment.{{ paypal_form.render }}</p>
                             </div>
                         </div>
                       
@@ -123,6 +123,7 @@
                         </div>
                     </div>
                 </div>
+                {{ paypal_form.render }}
                 <div class="bg-white p-4 lg:hidden text-gray-700 sticky inset-y-0">
                     <div class="p-4 "> 
                         <div class=" flex justify-between text-sm border-b border-gray-500">
@@ -247,7 +248,7 @@
             // Define the respective URLs for each payment method
             const urlMapping = {
             'dpo': '{% url "DPO" %}',
-            'visa': '{% url "stripe" %}',
+            
             'mpesa': '{% url "stk" %}'
         };
 

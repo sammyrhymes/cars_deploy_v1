@@ -1,50 +1,48 @@
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
-
 from django import forms
+from .models import *
+from multiupload.fields import MultiFileField
 
-from django.forms.widgets import PasswordInput, TextInput
 
+# create forms  
 
-
-# Create/Register a user (model form)
-class CreateUserForm(UserCreationForm):
+class CompetitionForm(forms.ModelForm):
     class Meta:
-        model = User
-        fields = ['username', 'email', 'password1', 'password2']
-        widgets = {
-            'username': forms.TextInput(attrs={'placeholder': 'Enter Username'}),
-            'email': forms.EmailInput(attrs={'placeholder': 'Enter Email'}),
-        }
+        model = Competition
+        fields = [
+            'car_model', 
+            'car_brand', 
+            'description', 
+            'specifications',  
+            'image', 
+            'ticket_price', 
+            'total_tickets', 
+            'start_date', 
+            'end_date', 
+            'max_entries_per_user',
+        ]
 
-    # Remove help text and labels in the __init__ method
-    def __init__(self, *args, **kwargs):
-        super(CreateUserForm, self).__init__(*args, **kwargs)
-        for field_name, field in self.fields.items():
-            field.help_text = None  # Removes help text
-            field.label = ''  # Removes labels
+        start_date  = forms.DateTimeField(
+            input_formats=[
+            '%Y-%m-%d %H:%M:%S',  # Format: YYYY-MM-DD HH:MM:SS
+            '%Y-%m-%d %H:%M',     # Format: YYYY-MM-DD HH:MM
+            '%Y-%m-%d',           # Format: YYYY-MM-DD
+            ],
+            required=False
+        )
 
-        self.fields['password1'].widget.attrs.update({'placeholder': 'Enter Password'})
-        self.fields['password2'].widget.attrs.update({'placeholder': 'Confirm Password'})
+        end_date  = forms.DateTimeField(
+            input_formats=[
+            '%Y-%m-%d %H:%M:%S',  # Format: YYYY-MM-DD HH:MM:SS
+            '%Y-%m-%d %H:%M',     # Format: YYYY-MM-DD HH:MM
+            '%Y-%m-%d',           # Format: YYYY-MM-DD
+            ],
+            required=False
+        )
+        
 
+class CompetitionImageForm(forms.ModelForm):
+    images = MultiFileField(required=False)
 
-# Authenticate a user (model form)
-class LoginForm(AuthenticationForm):
-    username = forms.CharField(widget=TextInput(attrs={'placeholder': 'Enter Username'}))
-    password = forms.CharField(widget=PasswordInput(attrs={'placeholder': 'Enter Password'}))
-
-    def __init__(self, *args, **kwargs):
-        super(LoginForm, self).__init__(*args, **kwargs)
-        self.fields['username'].label = ''
-        self.fields['password'].label = ''
-
-    def clean(self):
-        username = self.cleaned_data.get('username')
-        password = self.cleaned_data.get('password')
-
-        if username and password:
-            user = authenticate(username=username, password=password)
-            if user is None:
-                raise forms.ValidationError('Invalid username or password.')
-        return super(LoginForm, self).clean()
+    class Meta:
+        model = CompetitionImage
+        fields = ['image']
