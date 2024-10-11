@@ -1,0 +1,14 @@
+venv/
+.env.dev
+development.py
+db.sqlite3
+__pycache__/
+*.py[cod]
+compe
+.logs
+manage_dev.py
+wsgi_dev.py
+asgi_dev.py
+# .env.prod
+facelift/
+media/

@@ -1,0 +1,148 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+{% static 'assets/css/style.css' %}
+{% block content %}
+
+<!-- 
+    =====================================
+    wallet Balance
+    ===================================== -->
+
+
+    <div class=" p-2 md:px-10 lg:px-20 gap-1 flex transition-all pt-14 duration-500">
+        <div class="bg-black w-10 rounded-l-xl">
+            <p class="text-xs tracking-widest text-center text-white transform -rotate-90 mt-16">{{ wallet.user.username }}</p>
+            <div class="grid grid-cols-1 gap-3 mt-8">
+                <span class="w-2 rounded-full mx-auto block bg-orange-500 h-2"></span>
+                <span class="w-2 rounded-full mx-auto block bg-orange-400 h-2"></span>
+                <span class="w-2 rounded-full mx-auto block bg-orange-300 h-2"></span>
+                <span class="w-2 rounded-full mx-auto block bg-orange-200 h-2"></span>
+            </div>
+        </div>
+        <div class="bg-[url('https://images.pexels.com/photos/1293120/pexels-photo-1293120.jpeg?auto=compress&cs=tinysrgb&w=600')] bg-cover bg-center text-gray-100 font-bold p-8 w-full rounded-r-xl">
+            <h2 class="mb-4 text-2xl ">Account Balance</h2>
+            <p class="text-5xl tracking-wide font-bold">{{ wallet.amount }}<span class="pl-1 text-sm">KES</span></p>
+            <p class="mt-8 text-sm">*use currency to enter competition</p>
+        </div>
+
+    </div>
+
+    
+<!-- 
+    =============================================
+    call to action
+    ============================================ -->
+
+    <div class="py-2 px-8 grid grid-cols-2 gap-4 md:absolute md:w-96 top-[180px] right-8 lg:right-16">
+                <div id="deposit" class="flex gap-2 rounded-lg items-center justify-around bg-black ">
+                    <svg class="size-12 p-2 bg-black text-white rounded" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" >
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+                      </svg>
+                      <p class="text-sm text-white">deposit</p>
+                    </div>      
+            <div id="withdraw" class="flex gap-2 rounded-lg items-center justify-around bg-black ">
+                <svg class="size-12 p-2 bg-black text-white rounded" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" >
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+                  </svg>
+                  <p class="text-sm text-white">withdraw</p>
+                </div>   
+    </div>
+
+    <!-- =====================================
+    wallet Transactions
+    ===================================== -->
+
+        <div class=" p-2 md:px-10 lg:px-20">
+            <h1 class="text-xl mb-4 font-bold border-y py-6">Transaction Details</h1>
+            
+            <table class="w-full text-left">
+                <thead>
+                    <tr class="border-b">
+                        <th class="py-2 px-4">Date</th>
+                        <th class="py-2 px-4">Transaction Type</th>
+                        <th class="py-2 px-4">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in transactions %}
+                        <tr class="border-b">
+                            <td class="py-2 px-4 text-sm">{{ transaction.date|date:"m-d-Y" }}</td>
+                            <td class="py-2 px-4 font-bold">{{ transaction.transaction_type }}</td>
+                            <td class="py-2 px-4 {% if transaction.amount > 0 %}text-green-500{% else %}text-red-500{% endif %}">
+                                {% if transaction.amount < 0 %}-{% endif %}KES {{ transaction.amount }}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="3" class="py-4 text-center">No transactions found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+<!-- ===================================
+deposit
+=================================== -->
+
+<div id="walletMenu" class="hidden inset-0 bg-black/50 flex justify-center items-center ">
+<div class="w-96 p-4 bg-white rounded-lg shadow-xl">
+    <div class="flex items-center justify-between">
+    <p></p>
+    <h1 id="head" class="text-center text-lg font-bold">Deposit</h1>
+    <p id="hideWalletMenu">X</p>
+    </div>
+    <div class="mt-4">
+        <form action="{% url 'deposit_stk' %}" method="POST">
+            {% csrf_token %}
+            <input class="p-2 border w-full rounded-lg" type="number" name="amount" id="" placeholder="amount" required> <br><br>
+            <input class="p-2 border w-full rounded-lg" type="number" name="phone" id="" placeholder="254 7..."><br><br>
+            <input class="block py-2 bg-black w-full text-white text-center" id="submit" type="submit" value="deposit">
+            <!-- <button type="submit"> Deposit </button>  -->
+        </form>
+    </div>
+</div>
+
+
+</div>
+
+    
+        <script>
+            const walletMenu = document.querySelector('#walletMenu')
+            const hideWalletMenu = document.querySelector('#hideWalletMenu')
+            const head = document.querySelector('#head')
+            const submit = document.querySelector('#submit')
+            const deposit = document.querySelector('#deposit')
+            const withdraw = document.querySelector('#withdraw')
+    
+            const withdrawPopUp = function(){
+                walletMenu.classList.replace('hidden', 'fixed')
+                head.innerText = 'withdraw'
+                submit.value = 'withdraw'
+            }
+    
+            const depositPopUp = function(){
+                walletMenu.classList.replace('hidden', 'fixed')
+                head.innerText = 'deposit'
+                submit.value = 'deposit'
+            }
+    
+            const hide = function(){
+                walletMenu.classList.replace('fixed', 'hidden')      
+            }
+    
+            hideWalletMenu.addEventListener('click', hide)
+            withdraw.addEventListener('click', withdrawPopUp)
+            deposit.addEventListener('click', depositPopUp)
+    
+    
+            
+    
+    
+            
+    
+        </script><br>
+
+{% endblock %}

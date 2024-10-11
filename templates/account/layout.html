@@ -1,0 +1,354 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+* {
+    text-decoration: none;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f9f9f9;
+    min-height: 100vh;
+    padding: 1rem;
+}
+
+/* General Form Container */
+.content {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 400px; /* Fixed width for larger screens */
+    width: 100%; /* 100% width for smaller screens */
+    margin: 2rem auto;
+}
+
+hr{
+    display: none;
+}
+
+h2{
+    padding: 10px 0;
+}
+
+img{
+    width: 40px;
+}
+
+p{
+    padding:10px 0;
+}
+
+form h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select,
+textarea {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    color: #333;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #000;
+    outline: none;
+}
+
+label {
+    font-size: 0.875rem;
+    color: #555;
+    margin-bottom: 0.5rem;
+    display: block;
+    text-transform: capitalize;
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #000;
+    color: #fff;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #333;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 0.875rem;
+}
+
+a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+input[type="checkbox"] {
+    margin-right: 0.5rem;
+}
+
+label[for="id_remember"] {
+    display: inline-block;
+    font-size: 0.875rem;
+    color: #333;
+}
+
+ul.errorList>li{
+    background-color: #ff4d4d;
+    color: #fff;
+    font-size: 0.875rem;
+    padding: 2px;
+}
+
+.error-message {
+    color: #ff4d4d;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+}
+
+.success-message {
+    color: #4dff88;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+}
+
+/* Removing padding on li elements */
+ul li {
+    padding-left: 0;
+    margin-bottom: 1rem; /* Add some space between items */
+}
+
+ul {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Third-party login buttons */
+ul li a {
+    padding: 0.5rem 1rem;
+    color: #000;
+}
+
+ul li a:hover {
+    color: blue;
+}
+
+/* Media query for small screens */
+@media (max-width: 600px) {
+    .content {
+        padding: 1rem;
+        box-shadow: none; /* Remove shadow for small screens */
+    }
+
+    form h1 {
+        font-size: 1.25rem;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select,
+    textarea {
+        font-size: 0.875rem;
+    }
+
+    button[type="submit"] {
+        font-size: 0.875rem;
+        padding: 0.5rem;
+    }
+
+    ul {
+        flex-direction: column;
+    }
+
+    ul li {
+        margin-bottom: 0.5rem;
+    }
+}
+/* Error List Styling */
+ul.errorList, ul.errorlist { /* Add 'ul.errorlist' as Django might use this class */
+    list-style-type: none; /* Remove bullet points */
+    padding: 0;
+    margin: 0;
+}
+
+ul.errorList>li, ul.errorlist>li { /* Apply to both errorList and errorlist */
+    background-color: #ff4d4d; /* Red background for errors */
+    color: #fff; /* White text for visibility */
+    font-size: 0.875rem;
+    padding: 0.5rem; /* Add some padding */
+    border-radius: 4px; /* Rounded corners */
+    margin-bottom: 0.5rem; /* Space between errors */
+}
+
+/* Third-party login buttons (Logos) */
+ul li a img {
+    width: 40px; /* Increase the size of the logo for better visibility */
+    height: auto; /* Maintain the aspect ratio */
+}
+
+ul li a {
+    display: flex;
+    align-items: center; /* Center the image and text vertically */
+    padding: 0.5rem 1rem;
+    color: #000;
+    justify-content: center; /* Center the logo */
+}
+
+ul li a:hover {
+    color: blue;
+}
+
+/* Fixing the margin and padding of the logo container */
+ul {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem; /* Add some spacing between the logos */
+}
+
+ul li {
+    padding: 0;
+    margin-bottom: 1rem;
+}
+
+
+
+        </style>
+        <title>
+            {% block head_title %}
+            {% endblock head_title %}
+        </title>
+        {% block extra_head %}
+        {% endblock extra_head %}
+    </head>
+    <body>
+        <div class="content">
+        {% block body %}
+            {% if messages %}
+                <div>
+                    <strong>{% trans "Messages:" %}</strong>
+                    <ul>
+                        {% for message in messages %}<li>{{ message }}</li>{% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            <!-- <div>
+                <ul>
+                    {% if user.is_authenticated %}
+                        {% url 'account_email' as email_url_ %}
+                        {% if email_url_ %}
+                            <li>
+                                <a href="{{ email_url_ }}">{% trans "Change Email" %}</a>
+                            </li>
+                        {% endif %}
+                        {% url 'account_change_password' as change_password_url_ %}
+                        {% if change_password_url_ %}
+                            <li>
+                                <a href="{{ change_password_url_ }}">{% trans "Change Password" %}</a>
+                            </li>
+                        {% endif %}
+                        {% url 'socialaccount_connections' as connections_url_ %}
+                        {% if connections_url_ %}
+                            <li>
+                                <a href="{{ connections_url_ }}">{% trans "Account Connections" %}</a>
+                            </li>
+                        {% endif %}
+                        {% url 'mfa_index' as mfa_url_ %}
+                        {% if mfa_url_ %}
+                            <li>
+                                <a href="{{ mfa_url_ }}">{% trans "Two-Factor Authentication" %}</a>
+                            </li>
+                        {% endif %}
+                        {% url 'usersessions_list' as usersessions_list_url_ %}
+                        {% if usersessions_list_url_ %}
+                            <li>
+                                <a href="{{ usersessions_list_url_ }}">{% trans "Sessions" %}</a>
+                            </li>
+                        {% endif %}
+                        {% url 'account_logout' as logout_url_ %}
+                        {% if logout_url_ %}
+                            <li>
+                                <a href="{{ logout_url_ }}">{% trans "Sign Out" %}</a>
+                            </li>
+                        {% endif %}
+                    {% else %}
+                        {% url 'account_login' as login_url_ %}
+                        {% if login_url_ %}
+                            <li>
+                                <a href="{{ login_url_ }}">{% trans "Sign In" %}</a>
+                            </li>
+                        {% endif %}
+                        {% url 'account_signup' as signup_url_ %}
+                        {% if signup_url_ %}
+                            <li>
+                                <a href="{{ signup_url_ }}">{% trans "Sign Up" %}</a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+            </div> -->
+            {% block content %}
+            {% endblock content %}
+        {% endblock body %}
+        {% block extra_body %}
+        {% endblock extra_body %}
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+    // Find the GitHub link and replace the text with an image
+    const githubLink = document.querySelector('a[title="GitHub"]');
+    if (githubLink) {
+        githubLink.innerHTML = '<img src="data:image/jpeg;base64,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" alt="GitHub Logo" style="width: 40px;">';
+    }
+    // Find the Google link and replace the text with an image
+    const googleLink = document.querySelector('a[title="Google"]');
+    if (googleLink) {
+        googleLink.innerHTML = '<img src="data:image/png;base64,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" alt="Google Logo" style="width: 40px; ">';
+    }
+    githubLink.parentElement.parentElement.classList.add('highlight');
+});
+
+
+
+    </script>
+    </body>
+</html>

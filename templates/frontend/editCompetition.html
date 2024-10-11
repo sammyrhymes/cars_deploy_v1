@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>competitions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+</head>
+<body class="bg-gray-100">
+
+
+    <div class="min-h-screen  lg:flex gap-4 container mx-auto p-4">
+
+        <!-- Nav for small screens -->
+        <div class="bg-white p-8 mb-4 shadow-lg lg:hidden">
+            <div class="flex justify-between items-center">
+                <h1 class="font-bold">Admin Panel</h1>
+                <svg id="hambugerIcon" class="size-6 sm:hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg> 
+                <div class="hidden sm:block">
+                    <ul class="text-center text-gray-500 flex">
+                        <li class="pt-6 underline"><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+                        <li class="pt-6"><a href="{% url 'listUsers' %}">Users</a></li>
+                        <li class="pt-6"><a href="{% url 'listCompetitions' %}">Competitions</a></li>
+                        <li class="pt-6"><a href="{% url 'createCompetition' %}">Create Competition</a></li>
+                    </ul>
+                </div>       
+            </div>
+
+            <div id="menu" class="hidden">
+                <ul class="text-center text-gray-500">
+                    <li class="pt-6 underline"><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+                    <li class="pt-6"><a href="{% url 'listUsers' %}">Users</a></li>
+                    <li class="pt-6"><a href="{% url 'listCompetitions' %}">Competitions</a></li>
+                    <li class="pt-6"><a href="{% url 'createCompetition' %}">Create Competition</a></li>
+                </ul>
+            </div>
+        </div>
+
+        
+        <!-- menu on large screens -->
+  
+        <div class="hidden lg:block left h-[97vh] absolute sticky top-4  w-1/5 bg-white p-8 rounded-lg lg:flex flex-col justify-between">
+          <div>
+          <h2 class="text-lg font-bold">
+            Admin Panel
+          </h2>
+          
+            <ul class="mt-8 text-gray-500">
+              <li class="pt-6 underline"><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+              <li class="pt-6"><a href="{% url 'listUsers' %}">Users</a></li>
+              <li class="pt-6"><a href="{% url 'listCompetitions' %}">Competitions</a></li>
+              <li class="pt-6"><a href="{% url 'createCompetition' %}">Create Competition</a></li>
+            </ul>
+          </div>
+          <div class="flex flex-col items-center text-gray-500">
+              <img class="size-12 rounded-full object-cover" src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=600" alt="">
+              <p class="text-sm">salma</p>
+              <p class="text-xs">salma@gmail.com</p>
+          </div>
+        </div>
+
+      <div class="right lg:w-4/5">
+        <div class="bg-white lg:flex justify-between text-gray-800 mb-4 p-8 rounded-xl shadow-lg">
+            <h1 class="text-2xl font-bold">Edit Competition</h1>
+            <div class="flex gap-4">
+                <button class="bg-black px-3 py-2 text-white rounded-xl hover:bg-gray-900 hover:text-gray-100"><a href="{% url 'listCompetitions' %}">Competition</a></button>
+            </div>
+        </div>
+
+        <!-- Competition edit form -->
+        <div class="bg-white text-gray-800 mb-4 p-8 rounded-xl shadow-lg">
+            <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="md:flex gap-2 mt-4">
+                    <div class="md:w-1/2 flex flex-col gap-1">
+                        <label for="car_model">Car Model</label>
+                        <input class="p-2 border rounded w-full" type="text" name="car_model" id="car_model" value="{{ form.car_model.value }}">
+                    </div>
+                    <div class="md:w-1/2 flex flex-col gap-1">
+                        <label for="car_brand">Car Brand</label>
+                        <input class="p-2 border rounded w-full" type="text" name="car_brand" id="car_brand" value="{{ form.car_brand.value }}">
+                    </div>
+                </div>
+
+                <div class="md:flex gap-2 mt-4">
+                    <div class="md:w-1/2 flex flex-col gap-1">
+                        <label for="description">Description</label>
+                        <textarea class="p-2 border rounded w-full" name="description" id="description">{{ form.description.value }}</textarea>
+                    </div>
+                    <div class="md:w-1/2 flex flex-col gap-1">
+                        <label for="specifications">Specifications</label>
+                        <textarea class="p-2 border rounded w-full" name="specifications" id="specifications">{{ form.specifications.value }}</textarea>
+                    </div>
+                </div>        
+                <div class="md:flex gap-2 mt-4">
+                    <div class="md:w-1/2 flex flex-col gap-1">
+                        <label for="ticket_price">Ticket Price</label>
+                        <input class="p-2 border rounded w-full" type="number" name="ticket_price" id="ticket_price" value="{{ form.ticket_price.value }}">
+                    </div>
+                    <div class="md:w-1/2 flex flex-col gap-1">
+                        <label for="total_tickets">Total Tickets</label>
+                        <input class="p-2 border rounded w-full" type="number" name="total_tickets" id="total_tickets" value="{{ form.total_tickets.value }}">
+                    </div>
+                </div>
+
+                <div class="md:flex gap-2 mt-4">
+                    <div class="md:w-1/2 flex flex-col gap-1">
+                        <label for="{{ form.start_date.id_for_label }}">Start Date & Time:</label>
+                    {{ form.start_date }} 
+                    <!-- Optionally, you can use a datetime picker for better UX -->
+
+                    </div>
+                    <div class="md:w-1/2 flex flex-col gap-1">
+                        <label for="{{ form.end_date.id_for_label }}">End Date & Time:</label>
+                    {{ form.end_date }} 
+                    <!-- Optionally, you can use a datetime picker for better UX -->
+
+                    </div>
+                </div>
+
+                <div class="md:flex gap-2 mt-4">
+                    <div class="md:w-1/2 flex flex-col gap-1">
+                        <label for="max_entries_per_user">Max Entries per User</label>
+                        <input class="p-2 border rounded w-full" type="number" name="max_entries_per_user" id="max_entries_per_user" value="{{ form.max_entries_per_user.value }}">
+                    </div>
+                    <div class="md:w-1/2 flex flex-col gap-1">
+                        <label for="image">Main Image</label>
+                        <input class="p-2 border rounded w-full" type="file" name="image" id="image">
+                    </div>
+                </div>
+
+                <!-- Existing carousel images display -->
+                <div class="mt-4">
+                    <h3>Current Carousel Images</h3>
+                    <div class="flex flex-wrap gap-2">
+                        {% for img in competition_images %}
+                            <div class="relative">
+                                <div  class=" absolute bg-black/50 inset-0  hover:block">
+                                    <span data-image-id="{{img.pk}}" class=" delete-icon text-right text-xl px-2 text-white bg-black inline-block">x</span>
+                                </div>
+                                <img src="{{ img.image.url }}" class="w-32 h-32 object-cover" alt="Carousel Image">
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Upload new carousel images -->
+                <div class="mt-4">
+                    <h3>Upload New Carousel Images</h3>
+                    <div id="carousel" class="flex flex-col gap-2">
+                        <input class="p-2 border rounded w-full" type="file" name="images" accept="image/*" multiple>
+                    </div>
+                </div>
+
+                <button class="w-full bg-green-500 p-2 rounded text-green-100 mt-4 hover:bg-green-400 transition">Confirm Edit</button>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+
+    <script>
+            document.addEventListener("DOMContentLoaded", function() {
+            // Image Upload
+            const addImageBtn = document.querySelector('#addImageBtn');
+            const carousel = document.querySelector('#carousel');
+
+            if (addImageBtn && carousel) {  // Ensure elements exist
+                addImageBtn.addEventListener('click', () => {
+                    console.log('Add image button clicked');
+                    const fileInput = document.createElement('input');
+                    fileInput.type = 'file';
+                    fileInput.accept = 'image/*';
+                    fileInput.classList.add('p-2', 'border', 'rounded', 'w-full', 'sm:w-auto');
+                    carousel.appendChild(fileInput);
+                });
+            }
+
+            // Hamburger Menu
+            const menu = document.querySelector('#menu');
+            const hambugerIcon = document.querySelector('#hambugerIcon');
+
+            if (hambugerIcon && menu) {  // Ensure elements exist
+                const toggleMenu = function() {
+                    console.log('Hamburger menu clicked');
+                    if (menu.classList.contains('hidden')) {
+                        menu.classList.replace('hidden', 'block');
+                    } else {
+                        menu.classList.replace('block', 'hidden');
+                    }
+                };
+
+                hambugerIcon.addEventListener('click', toggleMenu);
+            }
+
+            // Initialize flatpickr with date and time for the start date field
+            flatpickr("input[name='start_date']", {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                time_24hr: true
+            });
+
+            // Initialize flatpickr with date and time for the end date field
+            flatpickr("input[name='end_date']", {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                time_24hr: true
+            });
+
+        
+        const deleteIcons = document.querySelectorAll('.delete-icon');
+
+        deleteIcons.forEach(icon => {
+        icon.addEventListener('click', () => {
+            console.log("clicked")
+            const imageId = icon.dataset.image-id;
+
+            fetch('/deleteImage/' + imageId, {
+                method: 'DELETE',
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message === 'Image deleted successfully') {
+                        // Remove the deleted image from the list
+                        const imageElement = document.getElementById('image-' + imageId);
+                        imageElement.remove();
+                        alert('Image deleted successfully');
+                    } else {
+                        alert('Error deleting image');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error deleting image');
+                });
+                });
+            });
+
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class=""></div>
+<div class="h-32 bg-[url('{% static 'assets/img/sign-in-out/background.jpg' %}')] relative">
+    <img class="absolute right-4 top-20 w-24 h-24 rounded-full border-4 border-white" src="{{ user.userprofile.image.url }}" alt="Profile Image">
+</div>
+
+<div class="md:flex md:justify-center md:px-10 lg:px-20 transition-all duration-500">
+    <div class="md:w-1/2 p-4">
+        <h1 class="text-2xl font-bold text-center">Welcome, {{user.username}}!</h1>
+        <h2 class="text-lg mt-2 text-center">Edit Your Details Here</h2>
+
+        <div class="mt-6">
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-xl font-semibold mb-4 text-center">Update Profile</h3>
+                <form method='POST' enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ user_form|crispy }}
+                    {{ profile_form|crispy }}
+                    <div class="mt-4">
+                        <input class="bg-info text-white font-bold py-2 px-4 rounded shadow w-full hover:bg-opacity-80 transition duration-300 cursor-pointer" type="submit" value="Update">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

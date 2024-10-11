@@ -1,0 +1,117 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class=""></div>
+<div class="h-32 bg-[url('{% static 'assets/img/sign-in-out/background.jpg' %}')] relative">
+    <img class="absolute right-6 top-20 w-24 h-24 rounded-full border-6 border-white" src="{{ user.userprofile.image.url }}" alt="Profile Image">
+</div>
+
+<div class="md:flex md:px-10 lg:px-20 transition-all duration-500">
+
+    <!-- User Details Section -->
+    <div class="md:w-1/2 p-4">
+        <h1 class="text-2xl font-bold">Welcome, {{ user.username }}</h1>
+        <h2 class="text-lg mt-4">Account Details</h2>
+        
+        <div class="my-4">
+            <div class="bg-white rounded-lg shadow-lg">
+                <div class="bg-info text-white p-4 rounded-t-lg">
+                    <h2 class="text-lg font-semibold">Profile</h2>
+                </div>
+                <div class="p-6"> <!-- Increased padding for better spacing -->
+                    <div class="flex flex-col md:flex-row items-start">
+                        <div class="w-full md:w-2/3 pr-0 md:pr-6 mb-4 md:mb-0">
+                            <span class="text-xl font-bold">Profile Information</span>
+                            <a class="btn btn-info btn-sm float-right mb-2" href="{% url 'user-profile-update' %}">Edit</a>
+                            <hr class="my-2">
+                            <table class="table-auto w-full bg-white">
+                                <tbody>
+                                    <tr>
+                                        <th class="text-left py-2">Username</th>
+                                        <td class="py-2">{{ user.username }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-left py-2">Email</th>
+                                        <td class="py-2">{{ user.email }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-left py-2">Phone</th>
+                                        <td class="py-2">{{ user.userprofile.phone }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-left py-2">Address</th>
+                                        <td class="py-2">{{ user.userprofile.address }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-left py-2">Date of Birth</th>
+                                        <td class="py-2">{{ user.userprofile.date_of_birth }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-left py-2">Favorite Car</th>
+                                        <td class="py-2">{{ user.userprofile.favorite_car }}</td>
+                                    </tr>
+        
+                                </tbody>                    
+                            </table>
+                            <a class="block no-underline hover:no-underline text-left py-2 font-bold text-black-500 hover:text-orange-700" href="{% url 'deposit' %}">View wallet</a>
+                        </div>
+                        <div class="w-full md:w-1/3">
+                            <img class=" mx-2 w-full h-32 aspect-video rounded-lg" src="{{ user.userprofile.image.url }}" alt="Profile Image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Ticket Functionality Section -->
+<div class="mt-4 p-4 md:w-1/2">
+    <h2 class="text-xl font-bold text-center">Competitions Entered</h2>
+    <div class="my-4">
+        {% for competition, tickets in competitions.items %}
+            <div class="bg-white rounded-lg shadow p-6 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="font-bold text-lg">{{ competition.car_model }}</h2> <!-- Competition Name -->
+                    <p class="text-sm font-bold text-gray-600">Total Tickets: {{ tickets|length }}</p> <!-- Total Tickets -->
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <h3 class="font-bold">Ticket Numbers</h3>
+                        <ul class="list-disc ml-5">
+                            {% for ticket in tickets %}
+                            
+                                    <li class="font-semibold">
+                                        {{ ticket }}
+                                    </li>                                    
+    
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="font-bold">Competition Details</h3>
+                        <p>Car Brand: {{competition.car_brand}}</p>
+                        <p>Car Model: {{ competition.car_model }}</p>
+                        <p>Start Date: {{ competition.start_date|date:"M d, Y" }}</p>
+                        <p>End Date: {{ competition.end_date|date:"M d, Y" }}</p>
+                    </div>
+                </div>
+
+                <div class="border-t pt-4">
+                    <p class="text-sm text-gray-500">Entered on {{ tickets.0.created_at|date:"M d, Y" }}</p> <!-- First ticket purchase date -->
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-center text-gray-500">No tickets purchased yet.</p>
+        {% endfor %}
+    </div>
+</div>
+
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,186 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+{% static 'assets/css/style.css' %}
+{% block content %}
+
+<!-- =======================
+Pop up
+======================= -->
+<div id="pop-up" class="bg-black/50 transform transition-all opacity-100 scale-100 p-4 sm:p-8 md:p-20 min-h-screen z-10 fixed hidden inset-0 flex justify-center items-center">
+  <div class="bg-white w-11/12 sm:w-4/5 md:w-2/3 lg:w-2/5 p-4 sm:p-6 md:p-10 rounded-lg shadow-xl">
+    <form method="POST" action="{% url 'add_to_baskety' competition.id %}">
+      {% csrf_token %}
+      <div class="grid grid-cols-3 pb-4 font-bold text-gray-600 tracking-wide">
+        <p></p>
+        <h2 class="justify-self-center sm:text-lg md:text-xl">Buy tickets</h2>
+        <a href="#" id="x" class="justify-self-end text-sm sm:text-base md:text-lg">X</a>
+      </div>
+
+      <div class="flex items-center mb-4">
+        <img class="w-2/5 rounded aspect-video" src="{{ competition.image.url }}" alt="{{ competition.car_model }}">
+        <div class="ml-6">
+          <h2 class="text-sm sm:text-base md:text-lg font-bold">{{ competition.name }}</h2>
+          <p class="text-sm sm:text-base md:text-lg">1 ticket = Ksh <span id="ticket-price">{{ competition.ticket_price }}</span></p>
+          <p class="text-sm sm:text-base md:text-lg font-bold"> Ksh <span id="total-price">{{ competition.ticket_price }}</span></p>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <h2 class="text-sm sm:text-base md:text-lg text-gray-600 font-bold">Quantity</h2>
+        <div class="flex gap-4 items-center py-2">
+          <button type="button" class="bg-white-200 text-xs sm:text-sm md:text-base px-2 py-1 rounded" id="decrement">-</button>
+          <input class="w-12 sm:w-14 text-xs sm:text-sm md:text-base text-center" value="2" type="number" name="ticket_count" id="quantity" min="1">
+          <button type="button" class="bg-white-200 text-xs sm:text-sm md:text-base px-2 py-1 rounded" id="increment">+</button>
+          <p class="text-xs sm:text-sm md:text-base">Max 75 tickets per person</p>
+        </div>
+      </div>
+
+      <div class="space-x-1 mt-2">
+        <h2 class="my-2 text-sm sm:text-base md:text-lg text-gray-600 font-bold">Quick Select</h2>
+        <div class="flex flex-wrap justify-start gap-2">
+          <a class="inline-block p-2 bg-gray-200 text-xs sm:text-sm md:text-base quick-select no-underline hover:no-underline" href="#" data-value="10">10 tickets</a>
+          <a class="inline-block p-2 bg-gray-200 text-xs sm:text-sm md:text-base quick-select no-underline hover:no-underline" href="#" data-value="20">20 tickets</a>
+          <a class="inline-block p-2 bg-gray-200 text-xs sm:text-sm md:text-base quick-select no-underline hover:no-underline" href="#" data-value="30">30 tickets</a>
+          <a class="inline-block p-2 bg-gray-200 text-xs sm:text-sm md:text-base quick-select no-underline hover:no-underline" href="#" data-value="40">40 tickets</a>
+          <a class="inline-block p-2 bg-gray-200 text-xs sm:text-sm md:text-base quick-select no-underline hover:no-underline" href="#" data-value="50">50 tickets</a>
+        </div>
+      </div>
+
+      <button class="block w-full py-3 px-8 mt-4 rounded-lg bg-orange-500 text-white text-xs sm:text-sm md:text-base font-bold animate-bounce">
+        Add to basket
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- 
+===================
+competition
+===================
+-->
+<div class="bg-gray-200 min-h-screen">
+  <div class="p-6 m-auto lg:flex">
+    <div class="border lg:w-2/3">
+      <img class="w-full" src="{{ competition.image.url }}" alt="{{ competition.name }}">
+
+      <div class="relative w-full overflow-hidden">
+        <!-- Container for images with horizontal scrolling -->
+        <div class="flex transition-transform duration-300 ease-in-out" id="carousel">
+            {% for image in images %}
+            <div class="w-1/4 flex-shrink-0 p-2"> <!-- Adjust width to 1/4 to display 4 images -->
+                <img class="w-full h-30 object-cover border" src="{{ image.image.url }}" alt="{{ competition.name }}">
+            </div>
+            {% endfor %}
+        </div>
+    
+        <!-- Left Arrow (to scroll left) -->
+    <button id="scrollLeft" class="absolute left-0 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-400 p-3">
+      <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+  </button>
+
+  <!-- Right Arrow (to scroll right) -->
+  <button id="scrollRight" class="absolute right-0 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-400 p-3">
+      <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+  </button>
+    </div>
+
+    </div>
+
+    <!-- This is the fixed sidebar for the competition details -->
+<div class="bg-white mt-2"> <!-- Adjusted width -->
+  <h1 class="mb-2 text-sm text-gray-500 font-bold">Win A {{ competition.name }}</h1>
+  <p class="text-lg mb-2 text-gray-700">
+    At only <span class="font-bold text-orange-500">ksh {{ competition.ticket_price }}</span> cash
+  </p>
+  <p class="font-bold text-lg text-gray-800">More Tickets Higher chances of winning >>></p>
+
+  <div class="flex flex-col mt-4">
+    <img class="w-full h-auto mb-4 max-w-xs" src="{{ competition.image.url }}" alt="{{ competition.car_model }}"> <!-- Adjusted image size -->
+
+    <h2 class="font-bold text-lg text-gray-800">Description</h2>
+    <div class="max-h-80 overflow-y-auto"> <!-- Scrollable specifications container -->
+      <ul class="pl-4 space-y-2 text-sm sm:text-base md:text-lg lg:text-sm text-gray-700">
+        {% for spec in specs_list %}
+        <li class="font-bold">{{ spec }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  
+  <a href="#" id="show-pop-up" class="block w-full px-8 py-3 bg-orange-500 rounded shadow text-white text-center mt-4 animate-bounce">ENTER NOW >></a>
+</div>
+  </div>
+
+  <div class="pt-4 px-4 sm:px-6 md:px-10 lg:px-20 transition-all duration-500">
+    <!-- Title for Similar Competitions, left-aligned -->
+    <div class="text-left">
+        <h1 class="font-bold text-gray-900 mb-4">Similar Competitions</h1>
+    </div>
+
+    <!-- Grid layout for competitions -->
+    <div class="mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 md:gap-4 lg:grid-cols-3 lg:gap-6 transition-all duration-500" id="carousel">
+        <!-- Example card for competitions -->
+        {% if competitions %}
+        {% for competition in competitions %}
+        <div class="mt-4 bg-white w-full sm:w-96 md:w-auto flex-shrink-0 rounded-lg border overflow-hidden hover:shadow-lg transition-transform transform hover:scale-105 duration-200 ease-in-out" id="card">
+            <a href="{% url 'competition' competition.id %}" class="block no-underline hover:no-underline">
+                <img src="{{ competition.image.url }}" alt="{{ competition.car_model }}" class="w-full rounded-t-lg">
+                <div class="p-4">
+                    <div class="flex justify-between mb-2">
+                        <div class="h-2 w-4/5 rounded-full bg-gray-200">
+                            <div class="w-1/2 h-2 rounded-full bg-gradient-to-r from-orange-500 to-orange-300"></div>
+                        </div>
+                        <p class="text-gray-800 text-xs">50% sold</p>
+                    </div>
+                    <p class="py-2 text-gray-700 font-bold">Win this {{ competition.name }} Tax free</p>
+                    <div class="flex items-center text-xs p-2 bg-orange-200 w-max rounded-md">
+                        <svg class="size-3 text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                        <p class="text-orange-600 ml-1">1 day</p>
+                    </div>
+                </div>
+            </a>
+            <div class="flex justify-between items-center px-4 pb-4 text-orange-500">
+                <p class="text-xl">Ksh {{ competition.ticket_price }}</p>
+                <svg class="size-10 fill-orange-500 text-white cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+</div> <br>
+
+<script>
+  // Carousel scrolling functionality
+  const carousel = document.getElementById('carousel');
+  const scrollLeftButton = document.getElementById('scrollLeft');
+  const scrollRightButton = document.getElementById('scrollRight');
+  
+  let currentIndex = 0;
+    const imagesToShow = 4;  // Number of images to show at once
+    const totalImages = {{ images|length }};
+    
+  scrollRightButton.addEventListener('click', () => {
+      if (currentIndex < totalImages - imagesToShow) {
+          currentIndex += imagesToShow; // Scroll to the next 4 images
+          carousel.style.transform = `translateX(-${currentIndex * 25}%)`; // 25% because each image is 1/4 width
+      }
+  });
+  
+  scrollLeftButton.addEventListener('click', () => {
+      if (currentIndex > 0) {
+          currentIndex -= imagesToShow;
+          carousel.style.transform = `translateX(-${currentIndex * 25}%)`;
+      }
+  });
+</script>
+{% endblock %}
