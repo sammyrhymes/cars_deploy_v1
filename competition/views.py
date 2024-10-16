@@ -45,7 +45,60 @@ from django.urls import reverse
 from user.models import *
 from django.db.models import Count
 
+from paypalrestsdk import Payment
+
 # Create your views here.
+
+def create_payment(request):
+    payment = Payment({
+        "intent": "sale",
+        "payer": {
+            "payment_method": "paypal"
+        },
+        "redirect_urls": {
+            "return_url": request.build_absolute_uri('/execute_payment/'), #"http://localhost:8000/payment/execute/",
+            "cancel_url": request.build_absolute_uri('/'), #"http://localhost:8000/"
+        },
+        "transactions": [{
+            "item_list": {
+                "items": [{
+                    "name": "Item Name",
+                    "sku": "item",
+                    "price": "10.00",
+                    "currency": "USD",
+                    "quantity": 1
+                }]
+            },
+            "amount": {
+                "total": "10.00",
+                "currency": "USD"
+            },
+            "description": "This is the payment description."
+        }]
+    })
+
+    if payment.create():
+        print("Payment created successfully")
+        for link in payment.links:
+            if link.rel == "approval_url":
+                approval_url = str(link.href)
+                return redirect(approval_url)
+    else:
+        print(payment.error)  # Handle error
+    return render(request, 'frontend/payment_success.html')
+
+def execute_payment(request):
+    payment_id = request.GET.get('paymentId')
+    payer_id = request.GET.get('PayerID')
+
+    payment = Payment.find(payment_id)
+
+    if payment.execute({"payer_id": payer_id}):
+        print("Payment executed successfully")
+        return render(request, 'frontend/payment_success.html')
+    else:
+        print(payment.error)  # Handle error
+    return render(request, 'frontend/payment_failure.html')
 
 def admin_dashboard(request):
 
@@ -106,6 +159,33 @@ def create_competition(request):
     return render(request, 'frontend/createCompetition.html', context)
 
 
+def create_holiday_competition(request):
+    if request.method == 'POST':
+        # Use forms for the holiday competition
+        competition_form = HolidayCompetitionForm(request.POST, request.FILES)
+        image_form = HoliCompetitionImageForm(request.POST, request.FILES)
+
+        if competition_form.is_valid() and image_form.is_valid():
+            competition = competition_form.save()
+
+            # Handle multiple images
+            for image in image_form.cleaned_data['images']:
+                HoliCompetitionImage.objects.create(competition=competition, image=image)
+
+            messages.success(request, "Holiday competition created successfully!")
+            return redirect('createholiCompetition')  # Redirect to the same or another success page
+    else:
+        competition_form = HolidayCompetitionForm()
+        image_form = HoliCompetitionImageForm()
+
+    context = {
+        'competition_form': competition_form,
+        'image_form': image_form,
+    }
+
+    return render(request, 'frontend/createHolidayCompetition.html', context)
+
+
 def listCompetitions(request):
     competition_list = Competition.objects.annotate(player_count=Count('entries'))    
     competition_count = competition_list.count()
@@ -127,6 +207,29 @@ def listCompetitions(request):
     }
 
     return render(request, 'frontend/listCompetitions.html', context)
+
+
+def listHolidayCompetitions(request):
+    competition_list = HolidayCompetition.objects.annotate(player_count=Count('entries'))    
+    competition_count = competition_list.count()
+    user_list = User.objects.all()
+    user_count = User.objects.all().count()
+    # holidays = HolidayCompetition.objects.all()
+    regular_users_count = User.objects.filter(is_staff=False, is_superuser=False).count()
+    admin_users_count = User.objects.filter(is_staff=True, is_superuser=True).count()
+
+    context = {
+        
+        'competition_count':competition_count,
+        'competition_list':competition_list,
+        'user_list':user_list,
+        'user_count': user_count,
+        'regular_users_count':regular_users_count,
+        'admin_users_count': admin_users_count,
+
+    }
+
+    return render(request, 'frontend/listHolidayCompetitions.html', context)
 
 
 def listUser(request):
@@ -189,22 +292,88 @@ def editCompetition(request, pk):
 
     return render(request, 'frontend/editCompetition.html', context)
 
+def editholidayCompetition(request, pk):
+    # Get the competition object
+    competition = get_object_or_404(HolidayCompetition, pk=pk)
+
+    # Get the current competition images for the carousel
+    competition_images = HoliCompetitionImage.objects.filter(competition=competition)
+
+    if request.method == 'POST':
+        # Create the forms with POST data and files
+        form = HolidayCompetitionForm(request.POST, request.FILES, instance=competition)
+        image_form = HoliCompetitionImageForm(request.POST, request.FILES)
+
+        if form.is_valid() and image_form.is_valid():
+            print("Form is valid.")
+            # Save the main competition details
+            form.save()
+
+            # Handle multiple images for the carousel
+            images = request.FILES.getlist('images')  # 'images' is the MultiFileField name
+            for img in images:
+                HoliCompetitionImage.objects.create(competition=competition, image=img)
+
+            # Redirect after successful edit
+            return redirect('listHolidayCompetitions')
+        else:
+            print(form.errors)
+    else:
+        # Create the form pre-filled with the competition's data
+        form = HolidayCompetitionForm(instance=competition)
+        image_form = HoliCompetitionImageForm()
+
+    context = {
+        'form': form,
+        'image_form': image_form,
+        'competition': competition,
+        'competition_images': competition_images,  # Existing images for display
+    }
+
+    return render(request, 'frontend/editHolidayCompetition.html', context)
+
 def deleteCompetition(request, pk):
     competition = get_object_or_404(Competition, pk=pk)  # Get the competition or return a 404
     competition.delete()  # Delete the competition
-    return redirect('listCompetition')
+    return redirect('listCompetitions')
 
-@csrf_exempt
-def deleteImage(request, pk):
-    competition = get_object_or_404(CompetitionImage, pk=pk)  # Get the competition or return a 404
+def deleteholidayCompetition(request, pk):
+    competition = get_object_or_404(HolidayCompetition, pk=pk)  # Get the competition or return a 404
     competition.delete()  # Delete the competition
-    return HttpResponse('imgae deleted successfuly')
+    return redirect('listHolidayCompetitions')
+
+# @csrf_exempt
+def deleteImage(request, pk):
+    if request.method == 'DELETE':  # Only allow DELETE requests
+        try:
+            competition_image = get_object_or_404(CompetitionImage, pk=pk)
+            competition_image.delete()
+            return JsonResponse({'message': 'Image deleted successfully'}, status=200)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
+    
+
+# @csrf_exempt
+def deleteholidayImage(request, pk):
+    if request.method == 'DELETE':  # Only allow DELETE requests
+        try:
+            competition_image = get_object_or_404(HoliCompetitionImage, pk=pk)
+            competition_image.delete()
+            return JsonResponse({'message': 'Image deleted successfully'}, status=200)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
 def index(request):
     competitions = Competition.objects.all().order_by('-start_date')[:4]
+    holicompetition = HolidayCompetition.objects.all().order_by('-start_date')[:7]
     context = {
         'competitions': competitions,
+        'holicompetition': holicompetition,
     }
     return render(request, 'frontend/index.html', context)
 
@@ -267,29 +436,56 @@ def update_basket(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         competition_id = data.get('competition_id')
+        holicompetition_id = data.get('holicompetition_id')  # Add this to handle HolidayCompetition
         ticket_count = data.get('ticket_count')
 
-        competition = get_object_or_404(Competition, id=competition_id)
+        # Check if it's a Competition or a HolidayCompetition
+        competition = None
+        holicompetition = None
+
+        if competition_id:
+            competition = get_object_or_404(Competition, id=competition_id)
+        elif holicompetition_id:
+            holicompetition = get_object_or_404(HolidayCompetition, id=holicompetition_id)
 
         if request.user.is_authenticated:
             # Update for authenticated users
-            basket_item, created = BasketItem.objects.get_or_create(
-                user=request.user,
-                competition=competition,
-                defaults={'ticket_count': 0}
-            )
-            basket_item.ticket_count = ticket_count
-            basket_item.save()
+            if competition:
+                # Handle Competition
+                basket_item, created = BasketItem.objects.get_or_create(
+                    user=request.user,
+                    competition=competition,
+                    defaults={'ticket_count': 0}
+                )
+                basket_item.ticket_count = ticket_count
+                basket_item.save()
+            elif holicompetition:
+                # Handle HolidayCompetition
+                basket_item, created = BasketItem.objects.get_or_create(
+                    user=request.user,
+                    holicompetition=holicompetition,
+                    defaults={'ticket_count': 0}
+                )
+                basket_item.ticket_count = ticket_count
+                basket_item.save()
+
         else:
             # Update for unauthenticated users
             basket = request.session.get('basket', {})
-            basket[competition_id] = ticket_count
+
+            if competition:
+                # For Competition
+                basket[str(competition_id)] = {'competition_id': competition_id, 'ticket_count': ticket_count}
+            elif holicompetition:
+                # For HolidayCompetition
+                basket[str(holicompetition_id)] = {'holicompetition_id': holicompetition_id, 'ticket_count': ticket_count}
+
+            # Save back to session
             request.session['basket'] = basket
 
         return JsonResponse({'success': True})
 
     return JsonResponse({'success': False}, status=400)
-
 
 
 def add_to_basket(request, id):
@@ -410,24 +606,30 @@ def view_basket(request):
         for item in basket:
             if 'competition_id' in item:
                 # Fetch competition item
+                competitions = Competition.objects.all()[:3]
                 competition = get_object_or_404(Competition, id=item['competition_id'])
                 total_cost += competition.ticket_price * item['ticket_count']
                 basket_items.append({
                     'id': competition.id,
                     'competition': competition,
                     'ticket_count': item['ticket_count'],
+                    'competitions': competitions,
                 })
             elif 'holicompetition_id' in item:
                 # Fetch holiday competition item
+                holicompetitions = HolidayCompetition.objects.all()[:3]
                 holicompetition = get_object_or_404(HolidayCompetition, id=item['holicompetition_id'])
                 total_cost += holicompetition.ticket_price * item['ticket_count']
                 basket_items.append({
                     'id': holicompetition.id,
                     'holicompetition': holicompetition,
                     'ticket_count': item['ticket_count'],
+                    'competitions': holicompetitions,
                 })
+
+    competitions = Competition.objects.all()[:3]
     
-    return render(request, 'frontend/view_basket.html', {'basket_items': basket_items, 'total_cost': total_cost})
+    return render(request, 'frontend/view_basket.html', {'basket_items': basket_items, 'total_cost': total_cost , 'competitions': competitions ,})
 
 def remove_from_basket(request, item_id):
     item = get_object_or_404(BasketItem, id=item_id)
@@ -489,13 +691,20 @@ def check_out(request):
     total_amount = 0
     item_names = []
 
-    for item in basket_items:
-        if item.competition:
-            total_amount += item.competition.ticket_price * item.ticket_count
-            item_names.append(item.competition.car_model)
-        elif item.holicompetition:
-            total_amount += item.holicompetition.ticket_price * item.ticket_count
-            item_names.append(item.holicompetition.name)
+
+
+    total_amount = sum(
+        (item.competition.ticket_price * item.ticket_count if item.competition else 0) +
+        (item.holicompetition.ticket_price * item.ticket_count if item.holicompetition else 0)
+        for item in basket_items
+    )
+
+        # if item.competition:
+        #     total_amount += item.competition.ticket_price * item.ticket_count
+        #     item_names.append(item.competition.car_model)
+        # elif item.holicompetition:
+        #     total_amount += item.holicompetition.ticket_price * item.ticket_count
+        #     item_names.append(item.holicompetition.name)
 
     item_name_string = ', '.join(item_names)  # Combine item names into a single string
     host = request.get_host()
@@ -567,16 +776,28 @@ def DPO_payment(request):
 
     basket_items = BasketItem.objects.filter(user=request.user)
     # Initialize the total amount
-    total_amount = 0
+    
 
-    # Calculate the total amount considering competition and holicompetition
-    for item in basket_items:
-        if item.competition:  # Check if the competition exists
-            total_amount += item.competition.ticket_price * item.ticket_count
-        elif item.holicompetition:  # Check if the holicompetition exists
-            total_amount += item.holicompetition.ticket_price * item.ticket_count
+    total_amount = sum(
+        (item.competition.ticket_price * item.ticket_count if item.competition else 0) +
+        (item.holicompetition.ticket_price * item.ticket_count if item.holicompetition else 0)
+        for item in basket_items
+    )
 
     amount = total_amount
+    
+
+    # Calculate the total amount considering competition and holicompetition
+    # for item in basket_items:
+    #     if item.competition:  # Check if the competition exists
+    #         amount += item.competition.ticket_price * item.ticket_count
+    #     elif item.holicompetition:  # Check if the holicompetition exists
+    #         amount += item.holicompetition.ticket_price * item.ticket_count
+        
+    
+
+
+
     currency = 'KES'  # Customize based on user choice
     transaction_reference = 'test_transaction_reference'  # Use a unique reference for testing
     
@@ -622,6 +843,8 @@ def stk(request):
         elif item.holicompetition:  # Check if holicompetition is not None
             total_cost += item.holicompetition.ticket_price * item.ticket_count
             totalcost = str(round(total_cost))
+
+    print(total_cost)
             
     if request.method == "POST":
         phone = request.POST.get('phone')

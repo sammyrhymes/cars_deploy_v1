@@ -29,9 +29,9 @@ Pop up
       <div class="mt-4">
         <h2 class="text-sm sm:text-base md:text-lg text-gray-600 font-bold">Quantity</h2>
         <div class="flex gap-4 items-center py-2">
-          <button type="button" class="bg-white-200 text-xs sm:text-sm md:text-base px-2 py-1 rounded" id="decrement">-</button>
+          <button type="button" class="bg-white-500 text-xs sm:text-sm md:text-base px-2 py-2 rounded" id="decrement"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAYAAADhAJiYAAACZUlEQVRYR92YUXLaMBCGd01MX9MbmMENzRs5QegN6A3StxZnpnCChhOEF+hjyAmSG6Q9QfNGoTDxDeLHTgLerhLawUKyZRsTpprJS0bSfvr312oNwo4N3DEe+D+ARqduA0JolBCOCWCfVXaWSvt8RB8JfCC8PBj8uk2bAWOF7trO/u+HUtNC/MxB6oaBgpCocziYDQ3nm6VMKGIRnKcAkePfQkjd2tfZdRJYokI/PbfNk77wRiI1uUZI0D0cTM/iNokFmnjVCwI8yUUhLeaA3w7603e6PbVAS2VEmjY++CJ03vanPdXGSqDxp2oTLLzYRJq0pwnpvcpTa0DiNj087t3kMLCpokGtP30tT14DKjJVcnAuCR/kkrAGNPaqdwDomB4z57w1lSJAk9abOiH9yBkk1XIkPFqt6BGgUcs9s/Cp5mxtMECPy0Dnb8AI0PjUvQKC5tZoOJBcl6JAnivSpXynxMIFwfcssMtHuKFZG/GRBKQ3tEnZ18EmWCEOyL3XFcMCgYDr0T9hdiBl5Nf6s4rS1BPPveF3RpfrLPZJXBNragY6Z6B24i4bnBB77UcfHccq7XGl3uKQHtkXfzrK9rxS6fmB0kPin6NW9YT7ZtF6FD5UN1fdD23lgSW/bC+OVtURCiiBlk296IkKG7quUdvCFnnj5Ju1euoXaPJpaNuLjpwqranlHG2yJRHK2Pa8q4PRekiGem76xYciOhlNZfwFm/ihuAqQod8O2LzdV/Z8GKeKsYd0agjFQsT6c59DrNqTclzciP8wEO+T+LHBLj/6piDGHsqYoszLUqUsc5QUC3cO6A9rq/Ul5bCzHwAAAABJRU5ErkJggg=="/></button>
           <input class="w-12 sm:w-14 text-xs sm:text-sm md:text-base text-center" value="2" type="number" name="ticket_count" id="quantity" min="1">
-          <button type="button" class="bg-white-200 text-xs sm:text-sm md:text-base px-2 py-1 rounded" id="increment">+</button>
+          <button type="button" class="bg-white-500 text-xs sm:text-sm md:text-base px-2 py-1 rounded" id="increment"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAYAAADhAJiYAAAChUlEQVRYR91YXXLaMBDWiuYV1BvAFPJMTlB6A3qD9AQN7wHskHdyg9ATtDeAniB560wgE9+gSl470XbFkI7/ZK/slDLVjF/s1erTt9+uVgZxYAMODI/4PwCtz9VASDMAhPcAQqEQbcs07S5CEBEIjJ5BfjkO9K1vBNgMPQRK/XoWwwbgZwLQZy6kDcLoeKYXTHteyCwjUuLcA0hifdr1LRoIu5f6WxmwUobWY3UGgFNypMqclX1HgWHv4ikosisEtJk2rwXCadlCXt9RrLqzxw+uOU5AO2bmXosxjZF01ZvpqzzzXECbczUUEq9fI0xOjAY+5mkqA8hmkzG4ZAuYQoCA37dpT2WA0mTAJEp3Lx7fpm0zgHxDFRfqetIMQIBNANagkvApXRIygDaT1gN5a7M8klEdQDQ9w1IC0F2g+tLgDReMtasJSBgJJ/GKngDkS/lrAKIad/UufBq9kJAAtJm2vtKWh/tkiNZL1KUEoPtJ68aZXbFsSgA2ctW71Cv77uXQzWROcfYldJRkqEDQnLLvYrZECoWAfrqK4V8EJKge/SHmEEIWEaBOvqjHraVHpd36qJv2xaKeNud08J3tM8sK0/5HoNpHBm2lZo/aDKUO2X9+dDQkdDqB1rkasi/vxupUwrb1YI06DOVlbn4/5HPAVm8/ImLnJM6OZSAXkK24IHHJoqiikatrdLaw9xUyjostnVnxeftv8gEXDZCjdKicok7vskpL4mLKMiNBhi4wTg2lHe6afnsDaXPDkrJj32BLL4pxx779Ns3VJN7wTUMsilhha8jFhmUMpenvbhmWNfvY4qZph5quHyv7s+GIfj5wgbA1VDFElad5hazyKh4TDw7Qb+0KZzTs46DTAAAAAElFTkSuQmCC"/></button>
           <p class="text-xs sm:text-sm md:text-base">Max 75 tickets per person</p>
         </div>
       </div>
@@ -62,33 +62,44 @@ competition
 <div class="bg-gray-200 min-h-screen">
   <div class="p-6 m-auto lg:flex">
     <div class="border lg:w-2/3">
-      <img class="w-full" src="{{ competition.image.url }}" alt="{{ competition.car_model }}">
-
+      <!-- Main image section with scroll buttons -->
+      <div class="relative">
+        <button id="mainScrollLeft" class="absolute left-0 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-400 p-3 z-10">
+          <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        
+        <img class="w-full" src="{{ competition.image.url }}" alt="{{ competition.car_model }}" id="mainImage">
+    
+        <button id="mainScrollRight" class="absolute right-0 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-400 p-3 z-10">
+          <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+    
       <div class="relative w-full overflow-hidden">
-        <!-- Container for images with horizontal scrolling -->
         <div class="flex transition-transform duration-300 ease-in-out" id="carousel">
-            {% for image in images %}
-            <div class="w-1/4 flex-shrink-0 p-2"> <!-- Adjust width to 1/4 to display 4 images -->
-                <img class="w-full h-30 object-cover border" src="{{ image.image.url }}" alt="{{ competition.car_model }}">
-            </div>
-            {% endfor %}
+          {% for image in images %}
+          <div class="w-1/4 flex-shrink-0 p-2">
+            <img class="w-full h-30 object-cover border thumbnail" src="{{ image.image.url }}" alt="{{ competition.car_model }}">
+          </div>
+          {% endfor %}
         </div>
     
-        <!-- Left Arrow (to scroll left) -->
-    <button id="scrollLeft" class="absolute left-0 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-400 p-3">
-      <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-      </svg>
-  </button>
-
-  <!-- Right Arrow (to scroll right) -->
-  <button id="scrollRight" class="absolute right-0 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-400 p-3">
-      <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-      </svg>
-  </button>
-    </div>
-
+        <button id="scrollLeft" class="absolute left-0 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-400 p-3">
+          <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+    
+        <button id="scrollRight" class="absolute right-0 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-400 p-3">
+          <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
     </div>
 
     <!-- This is the fixed sidebar for the competition details -->
@@ -161,27 +172,98 @@ competition
 </div> <br>
 
 <script>
-  // Carousel scrolling functionality
   const carousel = document.getElementById('carousel');
   const scrollLeftButton = document.getElementById('scrollLeft');
   const scrollRightButton = document.getElementById('scrollRight');
+  const mainScrollLeftButton = document.getElementById('mainScrollLeft');
+  const mainScrollRightButton = document.getElementById('mainScrollRight');
+  const mainImage = document.getElementById('mainImage');
+  const thumbnailImages = document.querySelectorAll('.thumbnail');
   
-  let currentIndex = 0;
-    const imagesToShow = 4;  // Number of images to show at once
-    const totalImages = {{ images|length }};
-    
+  let currentIndex = 0; // Current index for the main image and carousel
+  const totalImages = thumbnailImages.length;
+  const autoScrollInterval = 3000; // Interval for automatic scrolling (in milliseconds)
+  let autoScrollTimer;
+
+  // Function to update the main image based on the clicked thumbnail
+  function updateMainImage(index) {
+      mainImage.src = thumbnailImages[index].src; // Update the main image source
+  }
+
+  // Function to scroll the thumbnails
+  function scrollThumbnails(direction) {
+      if (direction === 'right') {
+          currentIndex = (currentIndex + 1) % totalImages; // Increment and loop
+      } else if (direction === 'left') {
+          currentIndex = (currentIndex - 1 + totalImages) % totalImages; // Decrement and loop
+      }
+      
+      // Move the carousel
+      const translateX = -currentIndex * (100 / 4); // Adjust based on the number of visible images
+      carousel.style.transform = `translateX(${translateX}%)`;
+
+      // Update the main image
+      updateMainImage(currentIndex);
+  }
+
+  // Function to automatically scroll
+  function startAutoScroll() {
+      autoScrollTimer = setInterval(() => {
+          scrollThumbnails('right');
+      }, autoScrollInterval);
+  }
+
+  // Function to stop auto-scrolling
+  function stopAutoScroll() {
+      clearInterval(autoScrollTimer);
+  }
+
+  // Event listener for scrolling right
   scrollRightButton.addEventListener('click', () => {
-      if (currentIndex < totalImages - imagesToShow) {
-          currentIndex += imagesToShow; // Scroll to the next 4 images
-          carousel.style.transform = `translateX(-${currentIndex * 25}%)`; // 25% because each image is 1/4 width
-      }
+      stopAutoScroll(); // Stop auto-scrolling when user interacts
+      scrollThumbnails('right');
   });
-  
+
+  // Event listener for scrolling left
   scrollLeftButton.addEventListener('click', () => {
-      if (currentIndex > 0) {
-          currentIndex -= imagesToShow;
-          carousel.style.transform = `translateX(-${currentIndex * 25}%)`;
-      }
+      stopAutoScroll(); // Stop auto-scrolling when user interacts
+      scrollThumbnails('left');
+  });
+
+  // Event listener for main image scrolling right
+  mainScrollRightButton.addEventListener('click', () => {
+      stopAutoScroll(); // Stop auto-scrolling when user interacts
+      scrollThumbnails('right');
+  });
+
+  // Event listener for main image scrolling left
+  mainScrollLeftButton.addEventListener('click', () => {
+      stopAutoScroll(); // Stop auto-scrolling when user interacts
+      scrollThumbnails('left');
+  });
+
+  // Event listener for thumbnail click
+  thumbnailImages.forEach((thumbnail, index) => {
+      thumbnail.addEventListener('click', () => {
+          stopAutoScroll(); // Stop auto-scrolling when user interacts
+          currentIndex = index; // Set current index to clicked thumbnail index
+          updateMainImage(currentIndex); // Update the main image
+          
+          // Scroll the thumbnails to show the clicked image
+          const translateX = -currentIndex * (100 / 4); // Adjust based on the number of visible images
+          carousel.style.transform = `translateX(${translateX}%)`;
+      });
+  });
+
+  // Start auto-scrolling when the page loads
+  window.onload = startAutoScroll;
+
+  // Optional: Restart auto-scroll after user interaction
+  const controls = [scrollLeftButton, scrollRightButton, mainScrollLeftButton, mainScrollRightButton];
+  controls.forEach(control => {
+      control.addEventListener('mouseenter', stopAutoScroll);
+      control.addEventListener('mouseleave', startAutoScroll);
   });
 </script>
+
 {% endblock %}

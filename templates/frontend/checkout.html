@@ -122,7 +122,8 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div><br>
+                <div id="paypal-button-container"></div><br>
                 {{ paypal_form.render }}
                 <div class="bg-white p-4 lg:hidden text-gray-700 sticky inset-y-0">
                     <div class="p-4 "> 
@@ -193,7 +194,7 @@
                 </div>
                 <div class="px-4 flex justify-between text-xl font-bold "> 
                     <h2>Subtotal</h2>
-                    <h2>{{amount}}</h2>
+                    <h2>{{total_amount}}</h2>
                 </div>
             </div>
         </div>
@@ -202,6 +203,8 @@
 
   <!-- JavaScript for handling payment methods and button logic -->
   <script>
+    
+    
   document.addEventListener('DOMContentLoaded', function () {
     const visaMasterRadio = document.getElementById('visa-master-radio');
     const mpesaRadio = document.getElementById('mpesa-radio');
@@ -257,6 +260,47 @@
             const form = document.getElementById('payment-form');
             form.action = urlMapping[paymentMethod];
         }
+  </script>
+
+  <script
+
+            src="https://www.paypal.com/sdk/js?client-id=AZ6OBhGRlZl31r6PRZq6AU8Wzty30cg8x8BW93kEF7Jq0g-ITGAwN5x5tq4f0QQd21VQ9p3K95lb_ND-&buyer-country=US&currency=USD&components=buttons&enable-funding=venmo,paylater,card"
+
+            data-sdk-integration-source="developer-studio">
+  </script>
+
+  <script>
+        window.paypal.Buttons({
+            //set up the trasnaction when a payment button is clicked
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: '10',
+                        }
+                    }]
+                });
+            },
+
+            // Finalize the trasnaction after payer approval
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(orderData) {
+                    //successfull capture!
+                    console.log('capture results', orderData, JSON.stringify(orderData, null, 2));
+                    var transaction = orderData.purchase_units[0].payments.captures[0];
+                    alert('Transaction'+ transaction.status + ': ' + transaction.id + '\n\nSee console for all available details');
+
+                    // when ready to go live remove the alert and show a success message within this page.
+                    // var element = document.getElementById('paypal-button-container');
+                    // element.innerHTML = '';
+                    // element.innerHTML = '<h3> Thank you for your payment! </h3>';
+                    // actions.redirect('Thankyou.html');
+
+                });
+            }
+        }).render('#paypal-button-container');
+        
+        
   </script>
 </body>
 </html>

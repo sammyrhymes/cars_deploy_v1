@@ -19,6 +19,9 @@ from django.utils import timezone
 
 @login_required
 def profile(request):
+    img1 = Competition.objects.get(id=4)
+    img2 = Competition.objects.get(id=3)
+    img3 = HolidayCompetition.objects.get(id=7)
     user = request.user
     # Query all tickets associated with this user
     tickets = Ticket.objects.filter(user=user).select_related('competition')
@@ -32,12 +35,19 @@ def profile(request):
     
     return render(request, 'user/profile.html', {
         'user': user,
-        'competitions': competitions
+        'competitions': competitions,
+        'img1': img1,
+        'img2': img2,
+        'img3': img3,
     })
 
 
 @login_required
 def profile_update(request):
+
+    img1 = Competition.objects.get(id=4)
+    img2 = Competition.objects.get(id=3)
+    img3 = HolidayCompetition.objects.get(id=7)
 
     if not hasattr(request.user, 'userprofile'):
         UserProfile.objects.create(user=request.user)
@@ -58,6 +68,9 @@ def profile_update(request):
     context = {
         'user_form': user_form,
         'profile_form': profile_form,
+        'img1': img1,
+        'img2': img2,
+        'img3': img3,
     }
     return render(request, 'user/profile_update.html', context)
 

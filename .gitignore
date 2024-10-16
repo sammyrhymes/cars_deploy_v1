@@ -1,12 +1,8 @@
 venv/
-.env.prod
-production.py
 db.sqlite3
 __pycache__/
 *.py[cod]
-compe
 .logs
-manage_prod.py
-wsgi_prod.py
-asgi_prod.py
-passenger_wsgi.py
+.env.prod
+facelift/
+dja/

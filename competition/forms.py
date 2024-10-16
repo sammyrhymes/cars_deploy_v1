@@ -46,3 +46,38 @@ class CompetitionImageForm(forms.ModelForm):
     class Meta:
         model = CompetitionImage
         fields = ['image']
+
+
+class HolidayCompetitionForm(forms.ModelForm):
+    start_date = forms.DateTimeField(
+        input_formats=[
+            '%Y-%m-%d %H:%M:%S',  # Format: YYYY-MM-DD HH:MM:SS
+            '%Y-%m-%d %H:%M',     # Format: YYYY-MM-DD HH:MM
+            '%Y-%m-%d',           # Format: YYYY-MM-DD
+        ],
+        required=False,
+        
+    )
+    end_date = forms.DateTimeField(
+        input_formats=[
+            '%Y-%m-%d %H:%M:%S',  # Format: YYYY-MM-DD HH:MM:SS
+            '%Y-%m-%d %H:%M',     # Format: YYYY-MM-DD HH:MM
+            '%Y-%m-%d',           # Format: YYYY-MM-DD
+        ],
+        required=False,
+      
+    )
+
+    class Meta:
+        model = HolidayCompetition
+        fields = [
+            'name', 'description', 'image', 'ticket_price', 
+            'total_tickets', 'start_date', 'end_date', 'max_entries_per_user'
+        ]
+
+class HoliCompetitionImageForm(forms.ModelForm):
+    images = MultiFileField(required=False)
+
+    class Meta:
+        model = HoliCompetitionImage
+        fields = ['image']

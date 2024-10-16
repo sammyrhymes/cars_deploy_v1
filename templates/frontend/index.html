@@ -7,7 +7,7 @@
         ============================= -->
         <div id="hero" class="h-screen relative">
           <video autoplay muted loop class="object-cover w-full h-full ">
-              <source src="https://videos.pexels.com/video-files/20076909/20076909-sd_640_360_25fps.mp4" type="video/mp4">
+              <source src="{% static 'assets/videos/hero.mp4' %}" type="video/mp4">
             </video>
           
             <div class="absolute top-0 left-0 right-0 bottom-0 bg-black/50 "></div>
@@ -16,7 +16,7 @@
               <h1 class="text-2xl font-bold uppercase">win your Dream car</h1>
               <p class="text-md mt-4">join and win a car now</p>
               <button class="bg-black  text-white px-4 py-2 shadow-orange-500 shadow-2xl mt-4">
-                   <a href="{% url 'competitions' %}" class="block no-underline hover:no-underline animate-bounce">Start here</a>               
+                   <a href="{% url 'competitions' %}" class="block no-underline hover:no-underline animate-bounce font-bold">WIN NOW</a>               
               </button>
             </div>
       </div>
@@ -61,7 +61,7 @@
                                 </div>
                                 <p class="text-gray-800 text-xs">50% sold</p>
                             </div>
-                            <p class="py-2 text-gray-700 font-bold">Win this {{ competition.car_brand }} Tax free</p>
+                            <p class="py-2 text-gray-700 font-bold">Win this {{ competition.car_brand }} </p>
                             <div class="flex items-center text-xs p-2 bg-orange-200 w-max rounded-md">
                                 <svg class="size-3 text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
@@ -72,7 +72,7 @@
                     </a>
                     <!-- Adjust the flexbox and reduce unnecessary padding or margin -->
                     <div class="flex justify-between items-center px-4 pb-4 -mt-2 text-orange-500">
-                        <p class="text-xl">Ksh {{ competition.ticket_price }}</p>
+                        <p class="text-xl"> For Only Ksh {{ competition.ticket_price }}</p>
                         <!-- Plus sign (separate from the link) -->
                         <svg class="size-10 fill-orange-500 text-white cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
@@ -94,7 +94,7 @@
     <div class=" bg-gray-100 p-4 text-sm md:px-10 lg:px-20 transition-all duration-500">
       <div class="flex justify-between items-center">
           <h2 class="font-bold uppercase">Holiday Competitions</h2>
-          <button class="bg-black px-4 py-2 text-gray-200"><a href="holidayCompetitions.html">view more</a></button>
+          <button class="bg-black px-4 py-2 text-gray-200"><a href="{% url 'holicompetitions' %}">view more</a></button>
       </div>
 
       <!-- car list -->
@@ -116,83 +116,38 @@
           <div class=" flex gap-0 sm:gap-4 transition-all duration-500 ease-in-out md:grid md:grid-cols-2 md:gap-2 lg:grid-cols-3 lg:gap-4 transition-all duration-500">
           <!-- car card -->
 
-              <div class="mt-4 bg-white w-full sm:w-96 md:w-auto flex-shrink-0" id="card">
-                  <img class="w-full" src="https://images.pexels.com/photos/457878/pexels-photo-457878.jpeg?auto=compress&cs=tinysrgb&w=600" alt="">
-                  <div class="p-2">
-                      <div class="flex justify-between">
-                          <div class=" h-2 w-4/5 rounded-full bg-gray-200 mt-2">
-                              <div class="w-1/2 h-2 rounded-full bg-gradient-to-r from-orange-500 to-orange-300 "></div>
-                          </div>
-                          <p class="text-gray-800 text-xs">50% sold</p>
-                      </div>
-                      <p class="py-2 text-gray-700 font-bold">Win this Audi RS4 Carbon Black Tax free</p>
-                      <div class="flex items-center text-xs p-1 bg-orange-200 w-max">
-                          <svg class="size-3  text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" >
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                          </svg>
-                          <p class="text-orange-600">1 day</p>                  
-                      </div>
-                      <div class="flex justify-between items-center mt-2 text-orange-500">
-                          <p class="text-xl">$0.49</p>
-                          <svg class="size-10 fill-orange-500 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" >
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                          </svg>                  
-                      </div>
-                  </div>
-              </div>
-
-
-              <div class="mt-4 bg-white w-full sm:w-96 md:w-auto flex-shrink-0" id="card">
-                  <img class="w-full" src="https://images.pexels.com/photos/1450353/pexels-photo-1450353.jpeg?auto=compress&cs=tinysrgb&w=600" alt="">
-                  <div class="p-2">
-                      <div class="flex justify-between">
-                          <div class=" h-2 w-4/5 rounded-full bg-gray-200 mt-2">
-                              <div class="w-1/2 h-2 rounded-full bg-gradient-to-r from-orange-500 to-orange-300 "></div>
-                          </div>
-                          <p class="text-gray-800 text-xs">50% sold</p>
-                      </div>
-                      <p class="py-2 text-gray-700 font-bold">Win this Audi RS4 Carbon Black Tax free</p>
-                      <div class="flex items-center text-xs p-1 bg-orange-200 w-max">
-                          <svg class="size-3  text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" >
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                          </svg>
-                          <p class="text-orange-600">1 day</p>                  
-                      </div>
-                      <div class="flex justify-between items-center mt-2 text-orange-500">
-                          <p class="text-xl">$0.49</p>
-                          <svg class="size-10 fill-orange-500 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" >
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                          </svg>                  
-                      </div>
-                  </div>
-              </div>
-
-
-              <div class="mt-4 bg-white w-full sm:w-96 md:w-auto flex-shrink-0" id="card">
-                  <img class="w-full" src="https://images.pexels.com/photos/457881/pexels-photo-457881.jpeg?auto=compress&cs=tinysrgb&w=600" alt="">
-                  <div class="p-2">
-                      <div class="flex justify-between">
-                          <div class=" h-2 w-4/5 rounded-full bg-gray-200 mt-2">
-                              <div class="w-1/2 h-2 rounded-full bg-gradient-to-r from-orange-500 to-orange-300 "></div>
-                          </div>
-                          <p class="text-gray-800 text-xs">50% sold</p>
-                      </div>
-                      <p class="py-2 text-gray-700 font-bold">Win this Audi RS4 Carbon Black Tax free</p>
-                      <div class="flex items-center text-xs p-1 bg-orange-200 w-max">
-                          <svg class="size-3  text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" >
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                          </svg>
-                          <p class="text-orange-600">1 day</p>                  
-                      </div>
-                      <div class="flex justify-between items-center mt-2 text-orange-500">
-                          <p class="text-xl">$0.49</p>
-                          <svg class="size-10 fill-orange-500 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" >
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                          </svg>                  
-                      </div>
-                  </div>
-              </div>
-
+              
+            {% for competition in holicompetition %}
+            <div class=" rounded-lg border overflow-hidden  mt-4 bg-white w-full sm:w-96 md:w-auto flex-shrink-0 transition-transform transform hover:scale-105 hover:shadow-md duration-200 ease-in-out" id="card">
+                <!-- Wrap the competition details in the anchor tag -->
+                <a href="{% url 'holicompetition' competition.id %}" class="block no-underline hover:no-underline">
+                    <img class="w-full" src="{{ competition.image.url }}" alt="{{ competition.name }}" class="rounded-t-lg">
+                    <div class="p-4">
+                        <div class="flex justify-between mb-2">
+                            <div class="h-2 w-4/5 rounded-full bg-gray-200">
+                                <div class="w-1/2 h-2 rounded-full bg-gradient-to-r from-orange-500 to-orange-300"></div>
+                            </div>
+                            <p class="text-gray-800 text-xs">50% sold</p>
+                        </div>
+                        <p class="py-2 text-gray-700 font-bold">Win a trip to {{ competition.name }} holiday NOW!</p>
+                        <div class="flex items-center text-xs p-2 bg-orange-200 w-max rounded-md">
+                            <svg class="size-3 text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                            <p class="text-orange-600 ml-1">1 day</p>                  
+                        </div>
+                    </div>
+                </a>
+                <!-- Adjust the flexbox and reduce unnecessary padding or margin -->
+                <div class="flex justify-between items-center px-4 pb-4 -mt-2 text-orange-500">
+                    <p class="text-xl">For Only Ksh {{ competition.ticket_price }}</p>
+                    <!-- Plus sign (separate from the link) -->
+                    <svg class="size-10 fill-orange-500 text-white cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                </div>
+            </div>
+          {% endfor %}
 
           </div>
       </div>
@@ -268,5 +223,6 @@
 
           </div>
         </div>
+        <!-- <script src="{% static 'assets/js/carousel.js' %}"></script>  -->
 
 {% endblock %}

@@ -29,6 +29,7 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
 
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet"
@@ -50,7 +51,7 @@
     <!-- ====================
         basket
         ==================== -->
-        <div id="basket" class="w-96 hidden bg-gray-100  fixed top-0 right-0 transform -translate-x-2 z-20 translate-y-20 rounded-lg shadow-lg p-4">
+        <!-- <div id="basket" class="w-96 hidden bg-gray-100  fixed top-0 right-0 transform -translate-x-2 z-20 translate-y-20 rounded-lg shadow-lg p-4">
             <h2 class="text-orange-500 font-bold">Basket</h2>
         
             {% for item in basket_items %}
@@ -92,7 +93,7 @@
 
             </div>
             <a href="{% url 'view_basket'%}" class="block px-8 py-3 bg-orange-500 rounded shadow text-white text-center animate-bounce">CHECK BASKET >></a>
-        </div>
+        </div> -->
     
    <!-- ==================
     navigation
@@ -123,6 +124,9 @@
         <div id="navLinks" class="hidden lg:flex p-2 space-x-8 text-md font-bold uppercase items-center">
             {% if request.user.is_authenticated %}
             <p>Welcome, {{user.username}}</p>
+                {% if request.user.is_staff and request.user.is_superuser %}
+                <a href="{% url 'admin_dashboard' %}" class="inline-block hover:text-orange-500 transition-colors duration-300 ease-in-out hover:underline" > Admin Panel</a>
+                {% endif %}
             {% endif %}
             
 
@@ -143,7 +147,7 @@
             
             
             <!-- Basket Icon -->
-            <a id="basketIcon" href="#" class="inline-block mt-1 relative hover:text-orange-500 transition-transform duration-300 ease-in-out transform hover:scale-110">
+            <a  href="{% url 'view_basket' %}" class="inline-block mt-1 relative hover:text-orange-500 transition-transform duration-300 ease-in-out transform hover:scale-110">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                 </svg>
@@ -165,7 +169,7 @@
             <a href="{% url 'account_signup' %}" class=" text-orange-500 block hover:text-orange-500 transition-colors duration-300 ease-in-out animate-bounce">Signup</a> 
             {% endif %}
 
-            <a href="#" class="block hover:text-orange-500 transition-colors duration-300 ease-in-out">Basket</a>
+            <a href="{% url 'view_basket' %}" class="block hover:text-orange-500 transition-colors duration-300 ease-in-out">Basket</a>
         </div>
     </div>
 
@@ -175,7 +179,7 @@
 
         <div
         class="group fixed right-7 bottom-[-50px] opacity-0 p-6 animate-fade-up animation-delay-1000">
-        <a href="https://wa.me/254707320922" class="text-6xl text-[#25d366] transition-transform duration-400 group-hover:scale-110">
+        <a href="https://wa.me/254787455836" class="text-6xl text-[#25d366] transition-transform duration-400 group-hover:scale-110">
             <i class="fa-brands fa-whatsapp transform transition-transform duration-400 group-hover:rotate-12"></i>
         </a>
         <span
@@ -260,6 +264,7 @@
         </div>
     </div>
     <script src="{% static 'assets/js/script.js' %}"></script>
+    <script src="{% static 'assets/js/carousel.js' %}"></script>
 
 </body>
 </html>

@@ -18,4 +18,4 @@ def check_image_properties(image_path):
             print(f"Image Quality: Usually 85 for JPEG, 100 for PNG (lossless)")
 
 # Example usage
-check_image_properties('static/assets/img/photo_2024-10-09_13-04-37.jpg')
+check_image_properties('static/assets/img/land/rangeroverlodge.jpg')

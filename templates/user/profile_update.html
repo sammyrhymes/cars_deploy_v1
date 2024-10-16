@@ -5,8 +5,29 @@
 {% block content %}
 
 <div class=""></div>
-<div class="h-32 bg-[url('{% static 'assets/img/sign-in-out/background.jpg' %}')] relative">
-    <img class="absolute right-4 top-20 w-24 h-24 rounded-full border-4 border-white" src="{{ user.userprofile.image.url }}" alt="Profile Image">
+<div class="  p-4 bg-[url('{% static 'assets/img/sign-in-out/background.jpg' %}')] relative">
+    <div class=" flex gap-4 mx-auto w-max">
+        <a href="{% url 'competition' 4 %}">
+
+            <img class=" animate-bounce h-40 aspect-video mx-auto" src="{{ img1.image.url }}" alt="">
+
+        </a>
+
+        <a href="{% url 'holicompetition' 7 %}">
+
+            <img class="  h-40 aspect-video mx-auto" src="{{ img3.image.url }}" alt="">
+
+        </a>
+
+        <a href=" {% url 'competition' 3 %} ">
+
+            <img class=" animate-bounce h-40 aspect-video mx-auto" src="{{ img2.image.url }}" alt="">
+
+        </a>
+
+    </div>
+    
+    <img class="absolute right-6 top-40 w-24 h-24 rounded-full border-6 border-white" src="{{ user.userprofile.image.url }}" alt="Profile Image">
 </div>
 
 <div class="md:flex md:justify-center md:px-10 lg:px-20 transition-all duration-500">

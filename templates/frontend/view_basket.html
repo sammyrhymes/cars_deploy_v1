@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Basket</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     {% load custom_filters %}
     {% load static %}
@@ -87,6 +88,49 @@
                 </div>
             </div>
         </div>
+        <div class="pt-4 px-4 sm:px-6 md:px-10 lg:px-20 transition-all duration-500">
+            <!-- Title for Similar Competitions, left-aligned -->
+            <div class="text-left">
+                <h1 class="font-bold text-gray-900 mb-4">Other People Play These Competitions Below. <span class="font-bold ">Win Now !</span> </h1>
+            </div>
+        
+            <!-- Grid layout for competitions -->
+            <div class="mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 md:gap-4 lg:grid-cols-3 lg:gap-6 transition-all duration-500" id="carousel">
+                <!-- Example card for competitions -->
+                {% if competitions %}
+                {% for competition in competitions %}
+                <div class="mt-4 bg-white w-full sm:w-96 md:w-auto flex-shrink-0" id="card">
+                    <a href="{% url 'competition' competition.id %}"></a>
+                    <img class="w-full" src="{{ competition.image.url }}" alt="{{ competition.car_model }}">
+                    </a>
+                    <div class="p-2">
+                        <div class="flex justify-between">
+                            <div class=" h-2 w-4/5 rounded-full bg-gray-200 mt-2">
+                                <div class="w-1/2 h-2 rounded-full bg-gradient-to-r from-orange-500 to-orange-300 "></div>
+                            </div>
+                            <p class="text-gray-800 text-xs">50% sold</p>
+                        </div>
+                        <p class="py-2 text-gray-700 font-bold">Win this {{ competition.car_brand }} Tax free</p>
+                        <div class="flex items-center text-xs p-1 bg-orange-200 w-max">
+                            <svg class="size-3  text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" >
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                            <p class="text-orange-600">1 day</p>                  
+                        </div>
+                        <div class="flex justify-between items-center mt-2 text-orange-500">
+                            <p class="text-xl">ksh  {{ competition.ticket_price }}</p>
+                            <svg class="size-10 fill-orange-500 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" >
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>                  
+                        </div>
+                    </div>
+                     
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+
+        
     </div>
 
     <script>
