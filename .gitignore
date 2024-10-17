@@ -6,3 +6,4 @@ __pycache__/
 .env.prod
 facelift/
 dja/
+django_basket_update.log

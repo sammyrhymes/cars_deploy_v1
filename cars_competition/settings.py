@@ -208,10 +208,9 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR, 'static'
 ]
-STATIC_ROOT = '/home/mydreamc/public_html/static'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = '/home/mydreamc/public_html/media'
+MEDIA_ROOT = os.path.join(BASE_DIR / 'media')
 
 
 # Default primary key field type
@@ -223,3 +222,5 @@ LOGIN_REDIRECT_URL = '/'
 
 PAYPAL_RECEIVER_EMAIL = 'bizrowino899@gmail.com'
 PAYPAL_TEST = True
+
+

@@ -228,10 +228,25 @@ class BasketItem(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     competition = models.ForeignKey(Competition, on_delete=models.CASCADE, null=True, blank=True)
     holicompetition = models.ForeignKey(HolidayCompetition, on_delete=models.CASCADE, null=True, blank=True)
-    ticket_count = models.IntegerField()
+    ticket_count = models.IntegerField(default=0)
+
+    class Meta:
+        unique_together = (('user', 'competition'), ('user', 'holicompetition'))
+        # indexes = [
+        #     models.Index(fields=['user']),
+        #     models.Index(fields=['competition']),
+        #     models.Index(fields=['holicompetition']),
+        # ]
 
     def __str__(self):
         if self.competition:
             return f"{self.ticket_count} tickets for {self.competition.car_model}"
         elif self.holicompetition:
             return f"{self.ticket_count} tickets for {self.holicompetition.name}"
+
+    def save(self, *args, **kwargs):
+        if self.ticket_count < 0:
+            raise ValueError("Ticket count cannot be negative.")
+        # if not self.competition and not self.holicompetition:
+        #     raise ValueError("A basket item must be associated with either a competition or a holiday competition.")
+        super().save(*args, **kwargs)

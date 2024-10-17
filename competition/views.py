@@ -47,6 +47,9 @@ from django.db.models import Count
 
 from paypalrestsdk import Payment
 
+from django.db import transaction
+import logging
+
 # Create your views here.
 
 def create_payment(request):
@@ -132,21 +135,27 @@ def admin_dashboard(request):
     return render(request, 'frontend/admin.html',context)
 
 
+# Create a competition
 def create_competition(request):
     if request.method == 'POST':
         competition_form = CompetitionForm(request.POST, request.FILES)
         image_form = CompetitionImageForm(request.POST, request.FILES)
 
         if competition_form.is_valid() and image_form.is_valid():
-            competition = competition_form.save()
+            try:
+                with transaction.atomic():  # Ensures all-or-nothing
+                    competition = competition_form.save()
 
+                    # Handle multiple images
+                    for image in image_form.cleaned_data['images']:
+                        CompetitionImage.objects.create(competition=competition, image=image)
 
-            # Handle multiple images
-            for image in image_form.cleaned_data['images']:
-                CompetitionImage.objects.create(competition=competition, image=image)
-
-            messages.success(request, "Competition created successfully!")
-            return redirect('createCompetition')  # Redirect to the same page or a success page
+                messages.success(request, "Competition created successfully!")
+                return redirect('createCompetition')
+            except Exception as e:
+                messages.error(request, f"An error occurred: {str(e)}")
+        else:
+            messages.error(request, "Please correct the errors below.")
     else:
         competition_form = CompetitionForm()
         image_form = CompetitionImageForm()
@@ -158,22 +167,27 @@ def create_competition(request):
     
     return render(request, 'frontend/createCompetition.html', context)
 
-
+# Create a holiday competition
 def create_holiday_competition(request):
     if request.method == 'POST':
-        # Use forms for the holiday competition
         competition_form = HolidayCompetitionForm(request.POST, request.FILES)
         image_form = HoliCompetitionImageForm(request.POST, request.FILES)
 
         if competition_form.is_valid() and image_form.is_valid():
-            competition = competition_form.save()
+            try:
+                with transaction.atomic():
+                    competition = competition_form.save()
 
-            # Handle multiple images
-            for image in image_form.cleaned_data['images']:
-                HoliCompetitionImage.objects.create(competition=competition, image=image)
+                    # Handle multiple images
+                    for image in image_form.cleaned_data['images']:
+                        HoliCompetitionImage.objects.create(competition=competition, image=image)
 
-            messages.success(request, "Holiday competition created successfully!")
-            return redirect('createholiCompetition')  # Redirect to the same or another success page
+                messages.success(request, "Holiday competition created successfully!")
+                return redirect('createholiCompetition')
+            except Exception as e:
+                messages.error(request, f"An error occurred: {str(e)}")
+        else:
+            messages.error(request, "Please correct the errors below.")
     else:
         competition_form = HolidayCompetitionForm()
         image_form = HoliCompetitionImageForm()
@@ -185,101 +199,88 @@ def create_holiday_competition(request):
 
     return render(request, 'frontend/createHolidayCompetition.html', context)
 
-
+# List all competitions
 def listCompetitions(request):
-    competition_list = Competition.objects.annotate(player_count=Count('entries'))    
+    competition_list = Competition.objects.annotate(player_count=Count('entries'))
     competition_count = competition_list.count()
     user_list = User.objects.all()
-    user_count = User.objects.all().count()
-    holidays = HolidayCompetition.objects.all()
+    user_count = user_list.count()
     regular_users_count = User.objects.filter(is_staff=False, is_superuser=False).count()
     admin_users_count = User.objects.filter(is_staff=True, is_superuser=True).count()
 
     context = {
-        
-        'competition_count':competition_count,
-        'competition_list':competition_list,
-        'user_list':user_list,
+        'competition_count': competition_count,
+        'competition_list': competition_list,
+        'user_list': user_list,
         'user_count': user_count,
-        'regular_users_count':regular_users_count,
+        'regular_users_count': regular_users_count,
         'admin_users_count': admin_users_count,
-
     }
 
     return render(request, 'frontend/listCompetitions.html', context)
 
-
+# List all holiday competitions
 def listHolidayCompetitions(request):
-    competition_list = HolidayCompetition.objects.annotate(player_count=Count('entries'))    
+    competition_list = HolidayCompetition.objects.annotate(player_count=Count('entries'))
     competition_count = competition_list.count()
     user_list = User.objects.all()
-    user_count = User.objects.all().count()
-    # holidays = HolidayCompetition.objects.all()
+    user_count = user_list.count()
     regular_users_count = User.objects.filter(is_staff=False, is_superuser=False).count()
     admin_users_count = User.objects.filter(is_staff=True, is_superuser=True).count()
 
     context = {
-        
-        'competition_count':competition_count,
-        'competition_list':competition_list,
-        'user_list':user_list,
+        'competition_count': competition_count,
+        'competition_list': competition_list,
+        'user_list': user_list,
         'user_count': user_count,
-        'regular_users_count':regular_users_count,
+        'regular_users_count': regular_users_count,
         'admin_users_count': admin_users_count,
-
     }
 
     return render(request, 'frontend/listHolidayCompetitions.html', context)
 
-
+# List all users
 def listUser(request):
-    # user_list = User.objects.all()
-    
     user_list = User.objects.annotate(competition_count=Count('entry'))
     user_count = user_list.count()
-    
-    # holidays = HolidayCompetition.objects.all()
     regular_users_count = User.objects.filter(is_staff=False, is_superuser=False).count()
     admin_users_count = User.objects.filter(is_staff=True, is_superuser=True).count()
-    context = {
-        'user_list':user_list,
-        'user_count': user_count,
-        'regular_users_count':regular_users_count,
-        'admin_users_count': admin_users_count,
 
+    context = {
+        'user_list': user_list,
+        'user_count': user_count,
+        'regular_users_count': regular_users_count,
+        'admin_users_count': admin_users_count,
     }
 
     return render(request, 'frontend/listUsers.html', context)
 
-
+# Edit a competition
 def editCompetition(request, pk):
-    # Get the competition object
     competition = get_object_or_404(Competition, pk=pk)
-
-    # Get the current competition images for the carousel
     competition_images = CompetitionImage.objects.filter(competition=competition)
 
     if request.method == 'POST':
-        # Create the forms with POST data and files
         form = CompetitionForm(request.POST, request.FILES, instance=competition)
         image_form = CompetitionImageForm(request.POST, request.FILES)
 
         if form.is_valid() and image_form.is_valid():
-            print("Form is valid.")
-            # Save the main competition details
-            form.save()
+            try:
+                with transaction.atomic():
+                    form.save()
 
-            # Handle multiple images for the carousel
-            images = request.FILES.getlist('images')  # 'images' is the MultiFileField name
-            for img in images:
-                CompetitionImage.objects.create(competition=competition, image=img)
+                    # Handle multiple images
+                    images = request.FILES.getlist('images')
+                    for img in images:
+                        CompetitionImage.objects.create(competition=competition, image=img)
 
-            # Redirect after successful edit
-            return redirect('listCompetitions')
+                messages.success(request, "Competition updated successfully!")
+                return redirect('listCompetitions')
+            except Exception as e:
+                messages.error(request, f"An error occurred: {str(e)}")
         else:
-            print(form.errors)
+            messages.error(request, "Please correct the errors below.")
     else:
-        # Create the form pre-filled with the competition's data
         form = CompetitionForm(instance=competition)
         image_form = CompetitionImageForm()
 
@@ -287,39 +288,37 @@ def editCompetition(request, pk):
         'form': form,
         'image_form': image_form,
         'competition': competition,
-        'competition_images': competition_images,  # Existing images for display
+        'competition_images': competition_images,
     }
 
     return render(request, 'frontend/editCompetition.html', context)
 
+# Edit a holiday competition
 def editholidayCompetition(request, pk):
-    # Get the competition object
     competition = get_object_or_404(HolidayCompetition, pk=pk)
-
-    # Get the current competition images for the carousel
     competition_images = HoliCompetitionImage.objects.filter(competition=competition)
 
     if request.method == 'POST':
-        # Create the forms with POST data and files
         form = HolidayCompetitionForm(request.POST, request.FILES, instance=competition)
         image_form = HoliCompetitionImageForm(request.POST, request.FILES)
 
         if form.is_valid() and image_form.is_valid():
-            print("Form is valid.")
-            # Save the main competition details
-            form.save()
+            try:
+                with transaction.atomic():
+                    form.save()
 
-            # Handle multiple images for the carousel
-            images = request.FILES.getlist('images')  # 'images' is the MultiFileField name
-            for img in images:
-                HoliCompetitionImage.objects.create(competition=competition, image=img)
+                    # Handle multiple images
+                    images = request.FILES.getlist('images')
+                    for img in images:
+                        HoliCompetitionImage.objects.create(competition=competition, image=img)
 
-            # Redirect after successful edit
-            return redirect('listHolidayCompetitions')
+                messages.success(request, "Holiday competition updated successfully!")
+                return redirect('listHolidayCompetitions')
+            except Exception as e:
+                messages.error(request, f"An error occurred: {str(e)}")
         else:
-            print(form.errors)
+            messages.error(request, "Please correct the errors below.")
     else:
-        # Create the form pre-filled with the competition's data
         form = HolidayCompetitionForm(instance=competition)
         image_form = HoliCompetitionImageForm()
 
@@ -327,24 +326,34 @@ def editholidayCompetition(request, pk):
         'form': form,
         'image_form': image_form,
         'competition': competition,
-        'competition_images': competition_images,  # Existing images for display
+        'competition_images': competition_images,
     }
 
     return render(request, 'frontend/editHolidayCompetition.html', context)
 
+# Delete a competition
 def deleteCompetition(request, pk):
-    competition = get_object_or_404(Competition, pk=pk)  # Get the competition or return a 404
-    competition.delete()  # Delete the competition
+    competition = get_object_or_404(Competition, pk=pk)
+    try:
+        competition.delete()
+        messages.success(request, "Competition deleted successfully!")
+    except Exception as e:
+        messages.error(request, f"An error occurred: {str(e)}")
     return redirect('listCompetitions')
 
+# Delete a holiday competition
 def deleteholidayCompetition(request, pk):
-    competition = get_object_or_404(HolidayCompetition, pk=pk)  # Get the competition or return a 404
-    competition.delete()  # Delete the competition
+    competition = get_object_or_404(HolidayCompetition, pk=pk)
+    try:
+        competition.delete()
+        messages.success(request, "Holiday competition deleted successfully!")
+    except Exception as e:
+        messages.error(request, f"An error occurred: {str(e)}")
     return redirect('listHolidayCompetitions')
 
-# @csrf_exempt
+# Delete an image
 def deleteImage(request, pk):
-    if request.method == 'DELETE':  # Only allow DELETE requests
+    if request.method == 'DELETE':
         try:
             competition_image = get_object_or_404(CompetitionImage, pk=pk)
             competition_image.delete()
@@ -353,11 +362,10 @@ def deleteImage(request, pk):
             return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400)
-    
 
-# @csrf_exempt
+# Delete a holiday image
 def deleteholidayImage(request, pk):
-    if request.method == 'DELETE':  # Only allow DELETE requests
+    if request.method == 'DELETE':
         try:
             competition_image = get_object_or_404(HoliCompetitionImage, pk=pk)
             competition_image.delete()
@@ -366,7 +374,6 @@ def deleteholidayImage(request, pk):
             return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400)
-
 
 def index(request):
     competitions = Competition.objects.all().order_by('-start_date')[:4]
@@ -393,7 +400,8 @@ def competition_details(request, competition_id):
     ticket_options = range(2, 21, 2) 
     competitions = Competition.objects.all()
     competition = get_object_or_404(Competition, id=competition_id)
-    images = CompetitionImage.objects.filter(competition=competition)
+    img = CompetitionImage.objects.all()
+    images = img.filter(competition=competition)
 
     specs_list = competition.specifications.splitlines()
    
@@ -415,7 +423,8 @@ def holidaycompetitions(request):
 def holicompetition_details(request, holicompetition_id):
     competitions = HolidayCompetition.objects.all()
     competition = get_object_or_404(HolidayCompetition, id=holicompetition_id)
-    images = HoliCompetitionImage.objects.filter(competition=competition)
+    img = HoliCompetitionImage.objects.all()
+    images = img.filter(competition=competition)
 
     specs_list = competition.description.splitlines()
    
@@ -430,61 +439,81 @@ def holicompetition_details(request, holicompetition_id):
 
 
 
+# Get the custom logger
+logger = logging.getLogger('update_basket_logger')
 
 @csrf_exempt  # Use with caution, consider your security requirements
 def update_basket(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
-        competition_id = data.get('competition_id')
-        holicompetition_id = data.get('holicompetition_id')  # Add this to handle HolidayCompetition
-        ticket_count = data.get('ticket_count')
+        try:
+            data = json.loads(request.body)
+            competition_id = data.get('competition_id')
+            holicompetition_id = data.get('holicompetition_id')  # Add this to handle HolidayCompetition
+            ticket_count = data.get('ticket_count')
 
-        # Check if it's a Competition or a HolidayCompetition
-        competition = None
-        holicompetition = None
+            # Log the incoming data
+            logger.debug(f"Received data: {data}")
 
-        if competition_id:
-            competition = get_object_or_404(Competition, id=competition_id)
-        elif holicompetition_id:
-            holicompetition = get_object_or_404(HolidayCompetition, id=holicompetition_id)
+            # Check if it's a Competition or a HolidayCompetition
+            competition = None
+            holicompetition = None
 
-        if request.user.is_authenticated:
-            # Update for authenticated users
-            if competition:
-                # Handle Competition
-                basket_item, created = BasketItem.objects.get_or_create(
-                    user=request.user,
-                    competition=competition,
-                    defaults={'ticket_count': 0}
-                )
-                basket_item.ticket_count = ticket_count
-                basket_item.save()
-            elif holicompetition:
-                # Handle HolidayCompetition
-                basket_item, created = BasketItem.objects.get_or_create(
-                    user=request.user,
-                    holicompetition=holicompetition,
-                    defaults={'ticket_count': 0}
-                )
-                basket_item.ticket_count = ticket_count
-                basket_item.save()
+            if competition_id:
+                competition = get_object_or_404(Competition, id=competition_id)
+                logger.debug(f"Competition found: {competition.id}")
+            elif holicompetition_id:
+                holicompetition = get_object_or_404(HolidayCompetition, id=holicompetition_id)
+                logger.debug(f"HolidayCompetition found: {holicompetition.id}")
 
-        else:
-            # Update for unauthenticated users
-            basket = request.session.get('basket', {})
+            if request.user.is_authenticated:
+                # Update for authenticated users
+                if competition:
+                    # Handle Competition
+                    basket_item, created = BasketItem.objects.get_or_create(
+                        user=request.user,
+                        competition=competition,
+                        defaults={'ticket_count': 0}
+                    )
+                    basket_item.ticket_count = ticket_count
+                    logger.debug(f"Updated Competition BasketItem: {basket_item}")
+                    basket_item.save()
 
-            if competition:
-                # For Competition
-                basket[str(competition_id)] = {'competition_id': competition_id, 'ticket_count': ticket_count}
-            elif holicompetition:
-                # For HolidayCompetition
-                basket[str(holicompetition_id)] = {'holicompetition_id': holicompetition_id, 'ticket_count': ticket_count}
+                elif holicompetition:
+                    # Handle HolidayCompetition
+                    basket_item, created = BasketItem.objects.get_or_create(
+                        user=request.user,
+                        holicompetition=holicompetition,
+                        defaults={'ticket_count': 0}
+                    )
+                    basket_item.ticket_count = ticket_count
+                    logger.debug(f"Updated HolidayCompetition BasketItem: {basket_item}")
+                    basket_item.save()
 
-            # Save back to session
-            request.session['basket'] = basket
+            else:
+                # Update for unauthenticated users
+                basket = request.session.get('basket', {})
+                logger.debug(f"Current session basket: {basket}")
 
-        return JsonResponse({'success': True})
+                if competition:
+                    # For Competition
+                    basket[str(competition_id)] = {'competition_id': competition_id, 'ticket_count': ticket_count}
+                    logger.debug(f"Updated session basket with Competition: {basket}")
+                elif holicompetition:
+                    # For HolidayCompetition
+                    basket[str(holicompetition_id)] = {'holicompetition_id': holicompetition_id, 'ticket_count': ticket_count}
+                    logger.debug(f"Updated session basket with HolidayCompetition: {basket}")
 
+                # Save back to session
+                request.session['basket'] = basket
+                logger.debug(f"Basket saved to session: {request.session['basket']}")
+
+            return JsonResponse({'success': True})
+
+        except Exception as e:
+            logger.error(f"Error occurred while updating basket: {e}", exc_info=True)
+            return JsonResponse({'success': False}, status=400)
+
+    logger.warning(f"Invalid request method: {request.method}")
     return JsonResponse({'success': False}, status=400)
 
 
@@ -543,7 +572,7 @@ def add_to_baskety(request, id):
 
         ticket_count = int(request.POST['ticket_count'])
 
-        print('first if')
+        print('first holi if')
 
         if ticket_count > 0 and ticket_count <= (competition.total_tickets - competition.tickets_sold):
 
@@ -555,7 +584,7 @@ def add_to_baskety(request, id):
                     defaults={'ticket_count': ticket_count}
                 )
 
-                print('2 if')
+                print('2 holi if')
 
                 if not created:
                     basket_item.ticket_count += ticket_count
@@ -732,42 +761,6 @@ def check_out(request):
         'paypal_form': paypal_form,
     })
 
-
-# Stripe configuration
-# stripe.api_key = settings.STRIPE_SECRET_KEY
-
-# def create_stripe_checkout_session(request):
-#     basket_items = BasketItem.objects.filter(user=request.user)
-
-#         # Create Stripe Checkout session
-
-#     line_items = []
-#     for item in basket_items:
-#         line_items.append({
-#             'price_data': {
-#                 'currency': 'usd',
-#                 'product_data': {
-#                     'name': item.competition.car_model,
-
-#                 },
-#                 'unit_amount': int(item.competition.ticket_price * 100),  # Amount in cents
-#             },
-#             'quantity': item.ticket_count,
-#         })
-
-#     checkout_session = stripe.checkout.Session.create(
-#         payment_method_types=['card'],
-#         line_items=line_items,
-#         mode='payment',
-#         success_url='http://127.0.0.1:8000/payment_success/',
-#         cancel_url='http://127.0.0.1:8000/payment_failed/',
-#     )
-#     return checkout_session.id
-
-# def stripe_payment(request):
-#   if request.method == 'POST':
-#     checkout_session = create_stripe_checkout_session(request)
-#     return redirect(checkout_session.url)
 
 def DPO_payment(request):
 
